@@ -114,7 +114,9 @@ def main(main_lang, output_file):
                 continue
             row = aligned_row
         # row should only ever be an aligned row
-        csv_rows.append(aligned_row_to_csv(word, row, test_languages))
+        csv_row = aligned_row_to_csv(word, row, test_languages)
+        print(csv_row)
+        csv_rows.append(csv_row)
 
     with open(output_file) as f:
         f.writelines(csv_rows)
