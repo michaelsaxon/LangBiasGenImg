@@ -47,8 +47,13 @@ def get_freq_list(lang):
 
 def get_word_or_synsets(word, to_langs, from_lang):
     # first, test if this word has a wikipedia page title
-    synset = bn.get_synset(bn.resources.WikipediaID(word, LANGS[from_lang], POS.NOUN))
-    if synset is None:
+    synset = bn.get_synset(bn.resources.WikipediaID(word, LANGS[from_lang]))
+    if synset is not None:
+        if synset.pos == POS.NOUN:
+            return synset
+        else:
+            return None
+    else:
         candidate_synsets = bn.get_synsets(
             word, 
             from_langs=[LANGS[from_lang]], 
@@ -127,7 +132,7 @@ def main(main_lang, output_file):
         print(csv_row)
         csv_rows.append(csv_row)
 
-    with open(output_file) as f:
+    with open(output_file, "w") as f:
         f.writelines(csv_rows)
 
 
