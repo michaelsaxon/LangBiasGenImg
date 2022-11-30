@@ -107,9 +107,11 @@ def main(main_lang, output_file):
                 aligned_row, quality = get_aligned_row(synset, test_languages, freq_lists_dict)
                 if aligned_row is None:
                     continue
-                if quality > best_quality:
+                if quality >= best_quality:
                     row = aligned_row
                     best_quality = quality
+            if best_quality == 0:
+                continue
         else:
             # it's a single synset. let's parse and get the crosslingual words
             aligned_row, _ = get_aligned_row(synset_or_list, test_languages, freq_lists_dict)
