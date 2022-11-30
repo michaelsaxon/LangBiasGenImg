@@ -40,6 +40,7 @@ LANGS = {
 
 # lang code in, language frequency list out, each frequency list is keyed by words, 
 def get_freq_list(lang):
+    print(f"Loading language json {lang}...")
     return json.loads(f"{lang}_2k.json")
 
 
