@@ -93,6 +93,7 @@ def main(main_lang, output_file):
 
     csv_rows = [",".join([main_lang] + test_languages) + "\n"]
     for word in freq_lists_dict[main_lang].keys():
+        print(word)
         synset_or_list = get_word_or_synsets(word, test_languages, main_lang)
         if synset_or_list is None:
             # can't get anything for this word
