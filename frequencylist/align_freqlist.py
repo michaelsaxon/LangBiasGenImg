@@ -74,6 +74,7 @@ def get_aligned_row(synset, test_languages, freq_lists_dict):
             candidates[lang][word] = freq_lists_dict[lang][word]
     for lang in test_languages:
         if candidates.get(lang, False) is False:
+            print(f"GArR: word {word} not found for lang {lang}")
             return None, None
         quality += max(candidates[lang].values())
         candidates[lang] = max(candidates[lang], key=candidates[lang].get)
@@ -99,6 +100,7 @@ def main(main_lang, output_file):
         synset_or_list = get_word_or_synsets(word, test_languages, main_lang)
         if synset_or_list is None:
             # can't get anything for this word
+            print("main: coundn't find any synset for this word")
             continue
         if type(synset_or_list) is list:
             # we need to determine which is the best
@@ -111,11 +113,13 @@ def main(main_lang, output_file):
                     row = aligned_row
                     best_quality = quality
             if best_quality == 0:
+                print("main: no aligned row across all langs for this synset (from a list)")
                 continue
         else:
             # it's a single synset. let's parse and get the crosslingual words
             aligned_row, _ = get_aligned_row(synset_or_list, test_languages, freq_lists_dict)
             if aligned_row is None:
+                print("main: found a single word, no alignment across all langs")
                 continue
             row = aligned_row
         # row should only ever be an aligned row
