@@ -73,6 +73,7 @@ def get_aligned_row(synset, test_languages, freq_lists_dict):
         if word in freq_lists_dict.get(lang, []):
             candidates[lang][word] = freq_lists_dict[lang][word]
     for lang in test_languages:
+        print(lang)
         if candidates.get(lang, False) is False:
             print(f"GArR: word {word} not found for lang {lang}")
             return None, None
