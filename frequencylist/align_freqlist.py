@@ -69,7 +69,7 @@ def get_aligned_row(synset, test_languages, freq_lists_dict):
     quality = 0
     for elem in synset:
         word = str(elem).split(":")[-1]
-        lang = elem.language.lower()
+        lang = str(elem.language).lower()
         if word in freq_lists_dict[lang]:
             candidates[lang][word] = freq_lists_dict[lang][word]
     for lang in test_languages:
