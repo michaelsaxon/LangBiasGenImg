@@ -11,7 +11,7 @@ setup(name='LBTK',
         'transformers',
         'click',
         'pytorch_lightning',
-        'wandb'
+        'wandb',
     ],
     zip_safe=False
 )

@@ -102,6 +102,7 @@ LANG_PROMPT_BITS = {
 }
 
 
+
 def main():
     prompts_base = open("frequencylist/freq_lists_gold.csv", "r")
     model_id = "CompVis/stable-diffusion-v1-4"
