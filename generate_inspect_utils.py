@@ -123,3 +123,7 @@ def main():
                 fname = f"{line_no}-{index[idx]}-{line[0]}-{i}.png"
                 print(f"saving image {fname}...")
                 im.save(f"samples/{fname}")
+
+
+if __name__ == "__main__":
+    main()
