@@ -104,9 +104,22 @@ LANG_PROMPT_BITS = {
 
 
 def main():
-    prompts_base = open("frequencylist/freq_lists_gold.csv", "r")
     model_id = "CompVis/stable-diffusion-v1-4"
     device = "cuda"
 
     pipe = StableDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
     pipe = pipe.to(device)
+
+    prompts_base = open("frequencylist/freq_lists_gold.csv", "r").readlines()
+    index = prompts_base[0].strip().split(",")
+    for line_no, line in enumerate(prompts_base[1:]):
+        for idx in range(len(index)):
+            # build a prompt based on the above templates from the 
+            prompt = LANG_PROMPT_BITS[index[idx]].replace("$$$", line[idx])
+            print(f"generating {index[idx]}:{line[0]}, '{line[idx]}'")
+            with autocast("cuda"):
+                image = pipe(prompt, guidance_scale=7.5, num_images_per_prompt=9).images
+            for i, im in enumerate(image):
+                fname = f"{line_no}-{index[idx]}-{line[0]}-{i}.png"
+                print(f"saving image {fname}...")
+                im.save(f"samples/{fname}")
