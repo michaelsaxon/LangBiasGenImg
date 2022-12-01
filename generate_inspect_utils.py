@@ -19,7 +19,7 @@ def get_text_embs(
 
     # 2. Define call parameters
     batch_size = 1 if isinstance(prompt, str) else len(prompt)
-    device = model._execution_device()
+    device = model._execution_device
     # here `guidance_scale` is defined analog to the guidance weight `w` of equation (2)
     # of the Imagen paper: https://arxiv.org/pdf/2205.11487.pdf . `guidance_scale = 1`
     # corresponds to doing no classifier free guidance.
@@ -54,7 +54,7 @@ def get_latents(
     model.check_inputs(prompt, height, width, callback_steps)
 
     batch_size = 1 if isinstance(prompt, str) else len(prompt)
-    device = model._execution_device()
+    device = model._execution_device
 
     text_embeddings = get_text_embs(model, prompt, guidance_scale, negative_prompt, num_images_per_prompt)
     # 4. Prepare timesteps
