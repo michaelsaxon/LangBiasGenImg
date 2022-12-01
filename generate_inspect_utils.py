@@ -113,6 +113,7 @@ def main():
     prompts_base = open("frequencylist/freq_lists_gold.csv", "r").readlines()
     index = prompts_base[0].strip().split(",")
     for line_no, line in enumerate(prompts_base[1:]):
+        line = line.strip().split(",")
         for idx in range(len(index)):
             # build a prompt based on the above templates from the 
             prompt = LANG_PROMPT_BITS[index[idx]].replace("$$$", line[idx])
