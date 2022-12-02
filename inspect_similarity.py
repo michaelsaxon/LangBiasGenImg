@@ -6,9 +6,9 @@ import torch.nn.functional as F
 
 "samples-11-30-7_5-flg1/0-en-dog-0.png"
 
-def get_image_embedding(processor, model, fname):
-    image = Image.open(fname, "r")
-    inputs = processor(images=image, return_tensors="pt")
+def get_image_embeddings(processor, model, fnames):
+    images = [Image.open(fname, "r") for fname in fnames]
+    inputs = processor(images=images, return_tensors="pt")
     inputs.to(model.device)
     outputs = model(**inputs)
     return outputs.pooler_output.squeeze()
@@ -16,10 +16,9 @@ def get_image_embedding(processor, model, fname):
 def avg_cos_sim(vec_list_1, vec_list_2):
     # this is O(n^2) lmao
     sims_sum = 0
-    sims_num = len(vec_list_1) * len(vec_list_2)
-    vec_list_1 = torch.stack(vec_list_1)
-    for vec_2 in vec_list_2:
-        sims_sum += float(F.cosine_similarity(vec_list_1, vec_2.unsqueeze(0)).sum())
+    sims_num = vec_list_1.shape[0] * vec_list_2.shape[0]
+    for i in range(vec_list_2.shape[0]):
+        sims_sum += float(F.cosine_similarity(vec_list_1, vec_list_2[i].unsqueeze(0)).sum())
     return sims_sum / sims_num
 
 def compare_by_lang(results_dict, main_lang = "en", similarity_func = avg_cos_sim):
@@ -45,10 +44,9 @@ def main():
         line = line.strip().split(",")
         for idx in range(len(index)):
             # build a prompt based on the above templates from the 
-            for i in range(9):
-                fname = f"samples-11-30-7_5-flg1/{line_no}-{index[idx]}-{line[0]}-{i}.png"
-                image_embedding = get_image_embedding(processor, model, fname)
-                results_dict[index[idx]].append(image_embedding)
+            fnames = [f"samples-11-30-7_5-flg1/{line_no}-{index[idx]}-{line[0]}-{i}.png" for idx in range(9)]
+            image_embedding = get_image_embeddings(processor, model, fnames)
+            results_dict[index[idx]] = image_embedding
         language_similarities = compare_by_lang(results_dict)
         print(line[0] + " " + str(language_similarities))
         out_lines.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
