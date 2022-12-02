@@ -50,7 +50,7 @@ def main():
                 image_embedding = get_image_embedding(processor, model, fname)
                 results_dict[index[idx]].append(image_embedding)
         language_similarities = compare_by_lang(results_dict)
-        out_lines.append(",".join([language_similarities[index] for index in index]) + "\n")
+        out_lines.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
     
     with open("results_samples-11-30-7_5-flg1.csv", "w") as f:
         f.writelines(out_lines)
