@@ -9,6 +9,7 @@ import torch.nn.functional as F
 def get_image_embedding(processor, model, fname):
     image = Image.open(fname, "r")
     inputs = processor(images=image, return_tensors="pt")
+    inputs.to(model.device)
     outputs = model(**inputs)
     return outputs.pooler_output.squeeze()
 
@@ -32,8 +33,8 @@ def compare_by_lang(results_dict, main_lang = "en", similarity_func = avg_cos_si
 def main():
     device = "cuda"
     model = CLIPVisionModel.from_pretrained("openai/clip-vit-base-patch32")
-    model.to(device)
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+    model.to(device)
     
     prompts_base = open("frequencylist/freq_lists_gold.csv", "r").readlines()
     out_lines = [prompts_base[0]]
