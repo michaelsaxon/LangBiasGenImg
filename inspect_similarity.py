@@ -53,3 +53,7 @@ def main():
     
     with open("results_samples-11-30-7_5-flg1.csv", "w") as f:
         f.writelines(out_lines)
+
+
+if __name__ == "__main__":
+    main()
