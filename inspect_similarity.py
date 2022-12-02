@@ -44,7 +44,7 @@ def main():
         line = line.strip().split(",")
         for idx in range(len(index)):
             # build a prompt based on the above templates from the 
-            fnames = [f"samples-11-30-7_5-flg1/{line_no}-{index[idx]}-{line[0]}-{i}.png" for idx in range(9)]
+            fnames = [f"samples-11-30-7_5-flg1/{line_no}-{index[idx]}-{line[0]}-{i}.png" for i in range(9)]
             image_embedding = get_image_embeddings(processor, model, fnames)
             results_dict[index[idx]] = image_embedding
         language_similarities = compare_by_lang(results_dict)
