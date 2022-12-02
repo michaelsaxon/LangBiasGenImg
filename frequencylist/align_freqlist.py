@@ -69,6 +69,12 @@ def get_word_or_synsets(word, to_langs, from_lang):
             return candidate_synsets
     return synset
 
+# trying to improve this stuff:
+'''
+elem members include 'full_lemma', 'id', 'is_automatic_translation', 'is_key_sense', 
+'is_not_automatic_translation', 'language', 'lemma', 'license', 'normalized_lemma', 
+'pos', 'pronunciations', 'sense_str', 'sensekey', 'source', 'synset', 'synset_id', 'to_uri' 
+'''
 def get_aligned_row(synset, test_languages, freq_lists_dict):
     candidates = defaultdict(dict)
     quality = 0
