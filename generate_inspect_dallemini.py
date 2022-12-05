@@ -85,8 +85,8 @@ def main(output_dir):
 
     processor = DalleBartProcessor.from_pretrained(DALLE_MODEL, revision=DALLE_COMMIT_ID)
 
-    # number of predictions per prompt
-    n_predictions = 9
+    # number of predictifons per prompt
+    n_predictions = 2
 
     # We can customize generation parameters (see https://huggingface.co/blog/how-to-generate)
     gen_top_k = None
