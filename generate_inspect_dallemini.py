@@ -25,27 +25,6 @@ from PIL import Image
 #from tqdm.notebook import trange
 
 
-# model inference
-@partial(jax.pmap, axis_name="batch", static_broadcasted_argnums=(3, 4, 5, 6))
-def p_generate(
-    tokenized_prompt, key, params, top_k, top_p, temperature, condition_scale
-):
-    return model.generate(
-        **tokenized_prompt,
-        prng_key=key,
-        params=params,
-        top_k=top_k,
-        top_p=top_p,
-        temperature=temperature,
-        condition_scale=condition_scale,
-    )
-
-# decode image
-@partial(jax.pmap, axis_name="batch")
-def p_decode(indices, params):
-    return vqgan.decode_code(indices, params=params)
-
-
 
 # dalle-mega
 DALLE_MODEL = "dalle-mini/dalle-mini/mega-1-fp16:latest"  # can be wandb artifact or 🤗 Hub or local folder or google bucket
@@ -126,8 +105,26 @@ def main(output_dir):
         VQGAN_REPO, revision=VQGAN_COMMIT_ID, _do_init=False
     )
 
-    model_id = "CompVis/stable-diffusion-v1-4"
-    device = "cuda"
+    # model inference
+    @partial(jax.pmap, axis_name="batch", static_broadcasted_argnums=(3, 4, 5, 6))
+    def p_generate(
+        tokenized_prompt, key, params, top_k, top_p, temperature, condition_scale
+    ):
+        return model.generate(
+            **tokenized_prompt,
+            prng_key=key,
+            params=params,
+            top_k=top_k,
+            top_p=top_p,
+            temperature=temperature,
+            condition_scale=condition_scale,
+        )
+
+    # decode image
+    @partial(jax.pmap, axis_name="batch")
+    def p_decode(indices, params):
+        return vqgan.decode_code(indices, params=params)
+
 
 
 
