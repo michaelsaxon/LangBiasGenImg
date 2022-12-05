@@ -4,6 +4,9 @@ from transformers import CLIPProcessor, CLIPVisionModel
 from collections import defaultdict
 import torch.nn.functional as F
 
+from PIL import ImageFile
+ImageFile.LOAD_TRUNCATED_IMAGES = True
+
 "samples-11-30-7_5-flg1/0-en-dog-0.png"
 
 def get_image_embeddings(processor, model, fnames):
