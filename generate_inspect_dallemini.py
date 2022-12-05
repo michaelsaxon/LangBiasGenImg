@@ -150,8 +150,8 @@ def main(output_dir):
             decoded_images = p_decode(encoded_images, vqgan_params)
             decoded_images = decoded_images.clip(0.0, 1.0).reshape((-1, 256, 256, 3))
             for i, decoded_img in enumerate(decoded_images):
-                print(f"saving image {fname}...")
                 fname = f"{line_no}-{index[idx]}-{line[0]}-{i}.png"
+                print(f"saving image {fname}...")
                 im = Image.fromarray(np.asarray(decoded_img * 255, dtype=np.uint8))
                 im.save(f"{output_dir}/{fname}")
 
