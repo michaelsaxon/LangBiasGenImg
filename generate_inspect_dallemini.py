@@ -27,7 +27,10 @@ from PIL import Image
 
 
 # dalle-mega
-DALLE_MODEL = "dalle-mini/dalle-mini/mega-1-fp16:latest"  # can be wandb artifact or 🤗 Hub or local folder or google bucket
+DALLE_MODELS = {
+    "mega" : "dalle-mini/dalle-mini/mega-1-fp16:latest",
+    "mini" : "dalle-mini/dalle-mini/mini-1:v0"
+}
 DALLE_COMMIT_ID = None
 
 # if the notebook crashes too often you can use dalle-mini instead by uncommenting below line
@@ -58,7 +61,8 @@ LANG_PROMPT_BITS = {
 @click.command()
 @click.option('--output_dir', default='samples_demega')
 @click.option('--n_predictions', default=9)
-def main(output_dir, n_predictions):
+@click.option('--model_size', default="mega")
+def main(output_dir, n_predictions, model_size):
 
     # check how many devices are available
     jax.local_device_count()
@@ -66,7 +70,7 @@ def main(output_dir, n_predictions):
 
     # Load dalle-mini
     model, params = DalleBart.from_pretrained(
-        DALLE_MODEL, revision=DALLE_COMMIT_ID, dtype=jnp.float16, _do_init=False
+        DALLE_MODELS[model_size], revision=DALLE_COMMIT_ID, dtype=jnp.float16, _do_init=False
     )
 
     # Load VQGAN
