@@ -57,6 +57,7 @@ LANG_PROMPT_BITS = {
 
 @click.command()
 @click.option('--output_dir', default='samples_demega')
+@click.option('--n_predictions', default=9)
 def main(output_dir):
 
     # check how many devices are available
@@ -84,9 +85,6 @@ def main(output_dir):
 
 
     processor = DalleBartProcessor.from_pretrained(DALLE_MODEL, revision=DALLE_COMMIT_ID)
-
-    # number of predictifons per prompt
-    n_predictions = 2
 
     # We can customize generation parameters (see https://huggingface.co/blog/how-to-generate)
     gen_top_k = None
