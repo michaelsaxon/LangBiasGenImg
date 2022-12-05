@@ -88,7 +88,7 @@ def main(output_dir, n_predictions, model_size):
     key = jax.random.PRNGKey(seed)
 
 
-    processor = DalleBartProcessor.from_pretrained(DALLE_MODEL, revision=DALLE_COMMIT_ID)
+    processor = DalleBartProcessor.from_pretrained(DALLE_MODELS[model_size], revision=DALLE_COMMIT_ID)
 
     # We can customize generation parameters (see https://huggingface.co/blog/how-to-generate)
     gen_top_k = None
