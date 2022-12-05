@@ -56,7 +56,7 @@ def main(analysis_dir):
         print(line[0] + " " + str(language_similarities))
         out_lines.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
     
-    with open("results_{analysis_dir}.csv", "w") as f:
+    with open(f"results_{analysis_dir}.csv", "w") as f:
         f.writelines(out_lines)
 
 
