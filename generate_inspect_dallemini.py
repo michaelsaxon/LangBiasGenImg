@@ -95,16 +95,6 @@ def main(output_dir):
     cond_scale = 10.0
 
 
-    # Load dalle-mini
-    model, params = DalleBart.from_pretrained(
-        DALLE_MODEL, revision=DALLE_COMMIT_ID, dtype=jnp.float16, _do_init=False
-    )
-
-    # Load VQGAN
-    vqgan, vqgan_params = VQModel.from_pretrained(
-        VQGAN_REPO, revision=VQGAN_COMMIT_ID, _do_init=False
-    )
-
     # model inference
     @partial(jax.pmap, axis_name="batch", static_broadcasted_argnums=(3, 4, 5, 6))
     def p_generate(
