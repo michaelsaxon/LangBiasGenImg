@@ -58,7 +58,7 @@ LANG_PROMPT_BITS = {
 @click.command()
 @click.option('--output_dir', default='samples_demega')
 @click.option('--n_predictions', default=9)
-def main(output_dir):
+def main(output_dir, n_predictions):
 
     # check how many devices are available
     jax.local_device_count()
