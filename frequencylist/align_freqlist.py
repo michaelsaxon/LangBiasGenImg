@@ -94,7 +94,7 @@ def attempt_translation(word, from_lang, to_lang, translator_function, translato
     except:
         return "*NOT_FOUND*"
 
-def simplified_translator_mapping(input_elems)
+def simplified_translator_mapping(input_elems):
     word, from_lang, to_lang, translator, lmapping = input_elems
     return attempt_translation(word, from_lang, to_lang, translator, lmapping)
 
