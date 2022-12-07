@@ -184,8 +184,7 @@ def main_freqlist(main_lang, output_file):
         f.writelines(csv_rows)
 
 
-def synset_word_best(synset, word, from_lang, test_languages):
-    candidate_words = {language : translator_heuristic(word, from_lang, language) for language in test_languages}
+def synset_word_best(synset, word, candidate_words, test_languages):
     quality = 0
     candidates = {}
     for elem in synset:
@@ -212,13 +211,14 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
     in_lines = open(input_file).readlines()
     if end_line == -1:
         end_line = len(in_lines)
-    candidate_words = map(lambda x: x.strip().lower(), in_lines[start_line:end_line])
+    input_words = map(lambda x: x.strip().lower(), in_lines[start_line:end_line])
 
     languages = list(LANGS.keys())
     test_languages = [lang for lang in languages if lang != main_lang]
 
     csv_rows = [",".join([main_lang] + test_languages) + "\n"]
-    for word in candidate_words:
+    for word in input_words:
+        candidate_words = {language : translator_heuristic(word, main_lang, language) for language in test_languages}
         print(word)
         synset_or_list = get_word_or_synsets(word, test_languages, main_lang)
         if synset_or_list is None:
@@ -230,7 +230,7 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
             # we need to determine which is the best
             best_quality = 0  
             def simplified_synset_word_map(synset):
-                return synset_word_best(synset, word, main_lang, test_languages)
+                return synset_word_best(synset, word, candidate_words, test_languages)
             #with Pool(5) as p:
             #    rows_quality = p.map(simplified_synset_word_map, synset_or_list)
             #for aligned_row, quality in rows_quality:
@@ -246,7 +246,7 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
                 continue
         else:
             # it's a single synset. let's parse and get the crosslingual words
-            aligned_row, quality = synset_word_best(synset_or_list, word, main_lang, test_languages)
+            aligned_row, quality = synset_word_best(synset_or_list, word, candidate_words, test_languages)
             if aligned_row is None:
                 print("main: found a single word, no alignment across all langs")
                 continue
