@@ -5,7 +5,7 @@ from babelnet.pos import POS
 from babelnet.data.source import BabelSenseSource
 import json
 from collections import defaultdict
-
+import translators as ts
 
 VALID_SOURCES = [
     BabelSenseSource.WN,
@@ -69,6 +69,17 @@ def get_word_or_synsets(word, to_langs, from_lang):
             return candidate_synsets
     return synset
 
+# [y for y in x if str(y.language).lower() in test_languages]
+
+
+def translator_heuristic(word, from_lang, to_lang):
+    hypotheses = []
+    hypotheses.append(ts.google(word, from_language=from_lang, to_language=to_lang).lower())
+    # could add others https://pypi.org/project/translate-api/
+    return hypotheses
+
+
+
 # trying to improve this stuff:
 '''
 elem members include 'full_lemma', 'id', 'is_automatic_translation', 'is_key_sense', 
@@ -91,13 +102,14 @@ def get_aligned_row(synset, test_languages, freq_lists_dict):
         candidates[lang] = max(candidates[lang], key=candidates[lang].get)
     return candidates, quality
 
+
 def aligned_row_to_csv(source_name, aligned_row, test_languages):
     return ",".join([source_name] + list(map(lambda lang: aligned_row[lang], test_languages))) + "\n"
 
 @click.command()
 @click.option('--main_lang', default='en')
 @click.option('--output_file', default='freq_lists.csv')
-def main(main_lang, output_file):
+def main_freqlist(main_lang, output_file):
     freq_lists_dict = {}
     languages = list(LANGS.keys())
     for lang in languages:
@@ -142,5 +154,67 @@ def main(main_lang, output_file):
         f.writelines(csv_rows)
 
 
+def synset_word_best(synset, word, test_languages):
+    candidate_words = {language : translator_heuristic(word) for language in test_languages}
+    quality = 0
+    candidates = {}
+    for elem in synset:
+        word = str(elem).split(":")[-1]
+        lang = str(elem.language).lower()
+        if word in candidate_words[lang]:
+            quality += 1
+            candidates[lang] = word
+    return candidate_words, quality
+
+
+@click.command()
+@click.option('--main_lang', default='en')
+@click.option('--input_file', default='english_nouns.txt')
+@click.option('--output_file', default='freq_lists_2.csv')
+def main_translation_service(main_lang, input_file, output_file):
+    candidate_words = map(lambda x: x.strip().lower(), open(input_file).readlines())
+
+    languages = list(LANGS.keys())
+    test_languages = [lang for lang in languages if lang != main_lang]
+
+    csv_rows = [",".join([main_lang] + test_languages) + "\n"]
+    for word in candidate_words:
+        print(word)
+        synset_or_list = get_word_or_synsets(word, test_languages, main_lang)
+        if synset_or_list is None:
+            # can't get anything for this word
+            print("main: coundn't find any synset for this word")
+            continue
+        if type(synset_or_list) is list:
+            # we need to determine which is the best
+            best_quality = 0
+            for synset in synset_or_list:
+                aligned_row, quality = synset_word_best(synset, test_languages)
+                if aligned_row is None:
+                    continue
+                if quality >= best_quality:
+                    row = aligned_row
+                    best_quality = quality
+            if best_quality == 0:
+                print("main: no aligned row across all langs for this synset (from a list)")
+                continue
+        else:
+            # it's a single synset. let's parse and get the crosslingual words
+            aligned_row, _ = synset_word_best(synset_or_list, test_languages)
+            if aligned_row is None:
+                print("main: found a single word, no alignment across all langs")
+                continue
+            row = aligned_row
+        # row should only ever be an aligned row
+        csv_row = aligned_row_to_csv(word, row, test_languages)
+        print(csv_row)
+        csv_rows.append(csv_row)
+
+    with open(output_file, "w") as f:
+        f.writelines(csv_rows)
+
+
+
+
 if __name__ == "__main__":
-    main()
+    main_translation_service()

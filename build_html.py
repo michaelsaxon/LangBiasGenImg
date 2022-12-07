@@ -41,5 +41,5 @@ for line_no, line in enumerate(prompts_base[1:]):
         middle += "</td>\n"
     middle += "</tr>\n"
 
-with open("samples_sd2/index.html","w") as f:
+with open("samples_demega/index.html","w") as f:
     f.write(BASE+middle+TAIL)

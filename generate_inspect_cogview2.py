@@ -1,14 +1,11 @@
 import torch
-from torch import autocast
-from diffusers import StableDiffusionPipeline
-from typing import Callable, List, Optional, Union
 from PIL import Image
 import argparse
-
+from tqdm import tqdm
 
 print("This requires installation of CogView2")
 
-from CogView2.cogview2_text2image import *
+from cogview2_text2image import *
 
 
 # some of these are hacks. I believe german and indonesian require some inflections depending on the word
@@ -37,7 +34,7 @@ def get_cogview2_gen_func(args):
     if not args.only_first_stage:
         srg = SRGroup(args)
         
-    def process(text, num_img_per_prompt = 9):
+    def process(text, num_img_per_prompt = 5):
         seq = tokenizer.encode(text)
         txt_len = len(seq) - 1
         seq = torch.tensor(seq + [-1]*400, device=args.device)
@@ -46,15 +43,13 @@ def get_cogview2_gen_func(args):
             device=args.device, dtype=torch.half)
         log_attention_weights[:, :txt_len] = args.attn_plus
         # generation
-        mbz = args.max_inference_batch_size
-        assert num_img_per_prompt < mbz or num_img_per_prompt % mbz == 0
         get_func = partial(get_masks_and_position_ids_coglm, context_length=txt_len)
         output_list, score_list = [], []
 
-        for _ in range(max(num_img_per_prompt // mbz, 1)):
+        for _ in tqdm(range(2)):
             strategy.start_pos = txt_len + 1
             coarse_samples = filling_sequence(model, seq.clone(),
-                    batch_size=min(num_img_per_prompt, mbz),
+                    batch_size=num_img_per_prompt,
                     strategy=strategy,
                     log_attention_weights=log_attention_weights,
                     get_masks_and_position_ids=get_func
@@ -63,13 +58,13 @@ def get_cogview2_gen_func(args):
             output_list.append(
                     coarse_samples
                 )
-        output_tokens = torch.cat(output_list, dim=0)
+            output_tokens = torch.cat(output_list, dim=0)
                     
         imgs = []
         iter_tokens = srg.sr_base(output_tokens[:, -400:], seq[:txt_len])
-        for seq in iter_tokens:
+        for seq in tqdm(iter_tokens):
             decoded_img = tokenizer.decode(image_ids=seq[-3600:])
-            decoded_img = torch.nn.functional.interpolate(decoded_img, size=(480, 480))
+            decoded_img = torch.nn.functional.interpolate(decoded_img, size=(480, 480)).squeeze()
             imgs.append(decoded_img) # only the last image (target)
 
         return list(map(
@@ -93,7 +88,7 @@ def main():
 
     with torch.no_grad():
         cogview2_img_from_prompt = get_cogview2_gen_func(args)
-
+        print("collected model successfully")
         prompts_base = open("frequencylist/freq_lists_gold.csv", "r").readlines()
         index = prompts_base[0].strip().split(",")
         for line_no, line in enumerate(prompts_base[1:]):
@@ -106,7 +101,7 @@ def main():
                 for i, im in enumerate(image):
                     fname = f"{line_no}-{index[idx]}-{line[0]}-{i}.png"
                     print(f"saving image {fname}...")
-                    im.save(f"samples/{fname}")
+                    im.save(f"samples_cv2/{fname}")
 
 
 if __name__ == "__main__":
