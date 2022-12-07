@@ -199,6 +199,14 @@ def synset_word_best(synset, word, from_lang, test_languages):
     return candidates, quality
 
 
+def simplified_synset_word_map(args_list):
+    synset = args_list[0]
+    word = args_list[1]
+    main_lang = args_list[2]
+    test_languages = args_list[3]
+    return synset_word_best(synset, word, main_lang, test_languages)
+
+
 @click.command()
 @click.option('--main_lang', default='en')
 @click.option('--input_file', default='english_nouns.txt')
@@ -220,13 +228,11 @@ def main_translation_service(main_lang, input_file, output_file):
         if type(synset_or_list) is list:
             # we need to determine which is the best
             best_quality = 0  
-            def simplified_synset_word_map(synset):
-                return synset_word_best(synset, word, main_lang, test_languages)
-            #with Pool(5) as p:
-            #    rows_quality = p.map(simplified_synset_word_map, synset_or_list)
-            #for aligned_row, quality in rows_quality:
-            for synset in synset_or_list:
-                aligned_row, quality = simplified_synset_word_map(synset)
+            with Pool(5) as p:
+                rows_quality = p.map(simplified_synset_word_map, list(map(lambda x: [x, word, main_lang, test_languages], synset_or_list)))
+            for aligned_row, quality in rows_quality:
+                #for synset in synset_or_list:
+                #aligned_row, quality = simplified_synset_word_map([synset])
                 if aligned_row is None:
                     continue
                 if quality >= best_quality:
