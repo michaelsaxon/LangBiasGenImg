@@ -196,7 +196,7 @@ def synset_word_best(synset, word, from_lang, test_languages):
         if word in candidate_words[lang]:
             quality += 1
             candidates[lang] = word
-    return candidate_words, quality
+    return candidates, quality
 
 
 @click.command()
