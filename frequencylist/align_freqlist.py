@@ -195,14 +195,12 @@ def synset_word_best(synset, word, candidate_words, test_languages):
             candidates[lang] = word
     if len(test_languages) > len(candidates.keys()):
         print(f"Missing a language: {candidates}")
-    return candidates, len(candidates.keys())
+    return candidates
 
 
 def meld_overlapping_dicts(list_of_dicts, target_key_set):
     sample = {key : None for key in target_key_set}
-    print(list_of_dicts)
-    list_of_dicts.sort(key = lambda _, quality: quality)
-    list_of_dicts = map(lambda _dict, _: _dict, list_of_dicts)
+    list_of_dicts.sort(key = lambda _dict: len(_dict.keys()))
     if list_of_dicts[0].keys() == sample.keys():
         return out_dict, len(target_key_set)
     for i in range(len(list_of_dicts)):
@@ -249,16 +247,18 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
             print("testing a list of synset options")
             # we need to determine which is the best
             best_quality = 0  
-            aligned_row, quality = meld_overlapping_dicts(
+            aligned_row = meld_overlapping_dicts(
                 [synset_word_best(synset, word, candidate_words, test_languages) for synset in synset_or_list],
                 test_languages
             )
+            quality = len(aligned_row.keys())
             if quality < len(test_languages):
                 print("main: no aligned row across all langs for this synset (from a list)")
                 continue
         else:
             # it's a single synset. let's parse and get the crosslingual words
-            aligned_row, quality = synset_word_best(synset_or_list, word, candidate_words, test_languages)
+            aligned_row = synset_word_best(synset_or_list, word, candidate_words, test_languages)
+            quality = len(aligned_row.keys())
             if aligned_row is None:
                 print("main: found a single word, no alignment across all langs")
                 continue
