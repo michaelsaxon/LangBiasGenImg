@@ -237,7 +237,7 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
                 if quality >= best_quality:
                     row = aligned_row
                     best_quality = quality
-            if best_quality == 0:
+            if best_quality < len(test_languages):
                 print("main: no aligned row across all langs for this synset (from a list)")
                 continue
         else:
