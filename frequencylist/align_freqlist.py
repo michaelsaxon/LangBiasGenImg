@@ -81,13 +81,14 @@ LANGS_GOOGLE = {
 def lmap(mapdict, lang):
     return mapdict.get(lang, lang)
 
+TLS = {
+    "gg": ts.google,
+    "bd" : ts.baidu,
+    "bg" : ts.bing,
+    "it" : ts.itranslate
+}
+
 def attempt_translation(word, from_lang, to_lang, translator_function, translator_map):
-    TLS = {
-        "gg": ts.google,
-        "bd" : ts.baidu,
-        "bg" : ts.bing,
-        "it" : ts.itranslate
-    }
     try:
         return TLS[translator_function](word, from_language=lmap(translator_map, from_lang), to_language=lmap(translator_map, to_lang)).lower()
     except:
