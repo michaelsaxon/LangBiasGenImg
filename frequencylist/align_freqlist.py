@@ -248,25 +248,24 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
             print("testing a list of synset options")
             # we need to determine which is the best
             best_quality = 0  
-            aligned_row = meld_overlapping_dicts(
+            row = meld_overlapping_dicts(
                 [synset_word_best(synset, word, candidate_words, test_languages) for synset in synset_or_list],
                 test_languages
             )
-            quality = len(aligned_row.keys())
+            quality = len(row.keys())
             if quality < len(test_languages):
                 print("main: no aligned row across all langs for this synset (from a list)")
                 continue
         else:
             # it's a single synset. let's parse and get the crosslingual words
-            aligned_row = synset_word_best(synset_or_list, word, candidate_words, test_languages)
-            quality = len(aligned_row.keys())
-            if aligned_row is None:
+            row = synset_word_best(synset_or_list, word, candidate_words, test_languages)
+            quality = len(row.keys())
+            if row is None:
                 print("main: found a single word, no alignment across all langs")
                 continue
             if quality < len(test_languages):
                 print("main: found a single word, no alignment across all langs")
                 continue
-            row = aligned_row
         # row should only ever be an aligned row
         csv_row = aligned_row_to_csv(word, row, test_languages)
         print(csv_row)
