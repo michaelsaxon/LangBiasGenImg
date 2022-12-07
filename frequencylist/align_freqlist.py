@@ -202,9 +202,14 @@ def synset_word_best(synset, word, from_lang, test_languages):
 @click.command()
 @click.option('--main_lang', default='en')
 @click.option('--input_file', default='english_nouns.txt')
-@click.option('--output_file', default='freq_lists_2.csv')
-def main_translation_service(main_lang, input_file, output_file):
-    candidate_words = map(lambda x: x.strip().lower(), open(input_file).readlines())
+@click.option('--output_file', default='freq_lists_2_$$$.csv')
+@click.option('--start_line', default=0)
+@click.option('--end_line', default=-1)
+def main_translation_service(main_lang, input_file, output_file, start_line, end_line):
+    in_lines = open(input_file).readlines()
+    if end_line == -1:
+        end_line = len(in_lines)
+    candidate_words = map(lambda x: x.strip().lower(), in_lines[start_line:end_line])
 
     languages = list(LANGS.keys())
     test_languages = [lang for lang in languages if lang != main_lang]
@@ -247,7 +252,7 @@ def main_translation_service(main_lang, input_file, output_file):
         print(csv_row)
         csv_rows.append(csv_row)
 
-    with open(output_file, "w") as f:
+    with open(output_file.replace("$$$","{start_line}_{end_line}"), "w") as f:
         f.writelines(csv_rows)
 
 
