@@ -203,7 +203,7 @@ def meld_overlapping_dicts(list_of_dicts, target_key_set):
     #print(list_of_dicts)
     list_of_dicts.sort(key = lambda _dict: len(_dict.keys()))
     if list_of_dicts[0].keys() == sample.keys():
-        return list_of_dicts[0].keys()
+        return list_of_dicts[0]
     for i in range(len(list_of_dicts)):
         out_dict = {key: list_of_dicts[i][key] for key in list_of_dicts[i].keys()}
         for j in range(i+1, len(list_of_dicts)):
