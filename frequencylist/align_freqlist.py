@@ -201,6 +201,27 @@ def synset_word_best(synset, word, candidate_words, test_languages):
     return candidates, quality
 
 
+def meld_overlapping_dicts(list_of_dicts, target_key_set):
+    sample = {key : None for key in target_key_set}
+    list_of_dicts.sort(key = lambda _dict: len(_dict.keys()))
+    if list_of_dicts[0].keys() == sample.keys():
+        return out_dict, len(target_key_set)
+    for i in range(len(list_of_dicts)):
+        out_dict = {key: list_of_dicts[i][key] for key in list_of_dicts[i].keys()}
+        for j in range(i+1, len(list_of_dicts)):
+            for key in list_of_dicts[j].keys():
+                if key in out_dict.keys():
+                    if out_dict[key] != list_of_dicts[j][key]:
+                        continue
+                else:
+                    out_dict[key] = list_of_dicts[j][key]
+        if out_dict.keys() == sample.keys():
+            return out_dict, len(target_key_set)
+    else:
+        return list_of_dicts[0], len(list(list_of_dicts[0].keys()))
+
+
+
 @click.command()
 @click.option('--main_lang', default='en')
 @click.option('--input_file', default='english_nouns.txt')
@@ -229,19 +250,10 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
             print("testing a list of synset options")
             # we need to determine which is the best
             best_quality = 0  
-            def simplified_synset_word_map(synset):
-                return synset_word_best(synset, word, candidate_words, test_languages)
-            #with Pool(5) as p:
-            #    rows_quality = p.map(simplified_synset_word_map, synset_or_list)
-            #for aligned_row, quality in rows_quality:
-            for synset in synset_or_list:
-                aligned_row, quality = simplified_synset_word_map(synset)
-                if aligned_row is None:
-                    continue
-                if quality >= best_quality:
-                    row = aligned_row
-                    best_quality = quality
-            if best_quality < len(test_languages):
+            aligned_row, quality = meld_overlapping_dicts([
+                synset_word_best(synset, word, candidate_words, test_languages) for synset in synset_or_list
+            ])
+            if quality < len(test_languages):
                 print("main: no aligned row across all langs for this synset (from a list)")
                 continue
         else:
