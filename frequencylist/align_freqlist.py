@@ -96,11 +96,10 @@ def attempt_translation(word, from_lang, to_lang, translator_function, translato
 def translator_heuristic(word, from_lang, to_lang):
     # could add others https://pypi.org/project/translate-api/
     translators = [("gg", LANGS_GOOGLE), ("bd", {}), ("bg", {}), ("it", {})]
+    def simplified_translator_mapping(translator, lmapping):
+        return attempt_translation(word, from_lang, to_lang, translator, lmapping)
     with Pool(len(translators)) as p:
-        hypotheses = p.map(
-            lambda translator, lmapping: attempt_translation(word, from_lang, to_lang, translator, lmapping), 
-            translators
-        )
+        hypotheses = p.map(simplified_translator_mapping, translators)
     return hypotheses
 
 # trying to improve this stuff:
@@ -212,12 +211,11 @@ def main_translation_service(main_lang, input_file, output_file):
             continue
         if type(synset_or_list) is list:
             # we need to determine which is the best
-            best_quality = 0            
+            best_quality = 0  
+            def simplified_synset_word_map(synset):
+                return synset_word_best(synset, word, main_lang, test_languages)
             with Pool(5) as p:
-                rows_quality = p.map(
-                    lambda synset: synset_word_best(synset, word, main_lang, test_languages),
-                    synset_or_list
-                )
+                rows_quality = p.map(simplified_synset_word_map, synset_or_list)
             for aligned_row, quality in rows_quality:
                 if aligned_row is None:
                     continue
