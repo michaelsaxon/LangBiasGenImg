@@ -200,6 +200,7 @@ def synset_word_best(synset, word, candidate_words, test_languages):
 
 def meld_overlapping_dicts(list_of_dicts, target_key_set):
     sample = {key : None for key in target_key_set}
+    print(list_of_dicts)
     list_of_dicts.sort(key = lambda _dict: len(_dict.keys()))
     if list_of_dicts[0].keys() == sample.keys():
         return out_dict, len(target_key_set)
