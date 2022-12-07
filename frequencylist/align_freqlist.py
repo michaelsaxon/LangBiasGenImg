@@ -72,9 +72,22 @@ def get_word_or_synsets(word, to_langs, from_lang):
 # [y for y in x if str(y.language).lower() in test_languages]
 
 
+LANGS_GOOGLE = {
+    'he' : 'iw',
+    'zh' : 'zh-CN'
+}
+
+BLANK = {}
+
+def lmap(mapdict, lang):
+    return mapdict.get(lang, lang)
+
 def translator_heuristic(word, from_lang, to_lang):
     hypotheses = []
-    hypotheses.append(ts.google(word, from_language=from_lang, to_language=to_lang).lower())
+    hypotheses.append(ts.google(word, from_language=lmap(LANGS_GOOGLE, from_lang), to_language=lmap(LANGS_GOOGLE, to_lang)).lower())
+    hypotheses.append(ts.alibaba(word, from_language=lmap(BLANK, from_lang), to_language=lmap(BLANK, to_lang)).lower())
+    hypotheses.append(ts.bing(word, from_language=lmap(BLANK, from_lang), to_language=lmap(BLANK, to_lang)).lower())
+    hypotheses.append(ts.itranslate(word, from_language=lmap(BLANK, from_lang), to_language=lmap(BLANK, to_lang)).lower())
     # could add others https://pypi.org/project/translate-api/
     return hypotheses
 
@@ -155,7 +168,7 @@ def main_freqlist(main_lang, output_file):
 
 
 def synset_word_best(synset, word, from_lang, test_languages):
-    candidate_words = {language : translator_heuristic(word, from_lang, language) for language in test_languages}
+    candidate_words = {language : translator_heuristic(word, from_lang,) for language in test_languages}
     quality = 0
     candidates = {}
     for elem in synset:
