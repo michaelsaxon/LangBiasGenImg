@@ -214,9 +214,11 @@ def main_translation_service(main_lang, input_file, output_file):
             best_quality = 0  
             def simplified_synset_word_map(synset):
                 return synset_word_best(synset, word, main_lang, test_languages)
-            with Pool(5) as p:
-                rows_quality = p.map(simplified_synset_word_map, synset_or_list)
-            for aligned_row, quality in rows_quality:
+            #with Pool(5) as p:
+            #    rows_quality = p.map(simplified_synset_word_map, synset_or_list)
+            #for aligned_row, quality in rows_quality:
+            for synset in synset_or_list:
+                aligned_row, quality = simplified_synset_word_map(synset)
                 if aligned_row is None:
                     continue
                 if quality >= best_quality:
