@@ -193,17 +193,17 @@ def synset_word_best(synset, word, candidate_words, test_languages):
             continue
         if word in candidate_words[lang]:
             candidates[lang] = word
-    if len(test_languages) > len(candidates.keys()):
-        print(f"Missing a language: {candidates}")
+    #if len(test_languages) > len(candidates.keys()):
+    #    print(f"Missing a language: {candidates}")
     return candidates
 
 
 def meld_overlapping_dicts(list_of_dicts, target_key_set):
     sample = {key : None for key in target_key_set}
-    print(list_of_dicts)
+    #print(list_of_dicts)
     list_of_dicts.sort(key = lambda _dict: len(_dict.keys()))
     if list_of_dicts[0].keys() == sample.keys():
-        return out_dict, len(target_key_set)
+        return out_dict
     for i in range(len(list_of_dicts)):
         out_dict = {key: list_of_dicts[i][key] for key in list_of_dicts[i].keys()}
         for j in range(i+1, len(list_of_dicts)):
@@ -214,9 +214,9 @@ def meld_overlapping_dicts(list_of_dicts, target_key_set):
                 else:
                     out_dict[key] = list_of_dicts[j][key]
         if out_dict.keys() == sample.keys():
-            return out_dict, len(target_key_set)
+            return out_dict
     else:
-        return list_of_dicts[0], len(list(list_of_dicts[0].keys()))
+        return list_of_dicts[0]
 
 
 
