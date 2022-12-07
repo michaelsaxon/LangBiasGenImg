@@ -197,7 +197,6 @@ def synset_word_best(synset, word, candidate_words, test_languages):
             candidates[lang] = word
     if len(test_languages) > len(candidates.keys()):
         print(f"Missing a language: {candidates}")
-        return None, 0
     return candidates, quality
 
 
