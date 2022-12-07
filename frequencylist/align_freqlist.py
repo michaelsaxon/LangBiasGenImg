@@ -77,21 +77,19 @@ LANGS_GOOGLE = {
     'zh' : 'zh-CN'
 }
 
-BLANK = {}
-
 def lmap(mapdict, lang):
     return mapdict.get(lang, lang)
 
 def translator_heuristic(word, from_lang, to_lang):
     hypotheses = []
-    hypotheses.append(ts.google(word, from_language=lmap(LANGS_GOOGLE, from_lang), to_language=lmap(LANGS_GOOGLE, to_lang)).lower())
-    hypotheses.append(ts.alibaba(word, from_language=lmap(BLANK, from_lang), to_language=lmap(BLANK, to_lang)).lower())
-    hypotheses.append(ts.bing(word, from_language=lmap(BLANK, from_lang), to_language=lmap(BLANK, to_lang)).lower())
-    hypotheses.append(ts.itranslate(word, from_language=lmap(BLANK, from_lang), to_language=lmap(BLANK, to_lang)).lower())
+    translators = [(ts.google, LANGS_GOOGLE), (ts.baidu, {}), (ts.bing, {}), (ts.itranslate, {})]
+    for translator, lmapping in translators:
+        try:
+            hypotheses.append(translator(word, from_language=lmap(lmapping, from_lang), to_language=lmap(lmapping, to_lang)).lower())
+        finally:
+            continue
     # could add others https://pypi.org/project/translate-api/
     return hypotheses
-
-
 
 # trying to improve this stuff:
 '''
