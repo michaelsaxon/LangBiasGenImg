@@ -82,14 +82,20 @@ def lmap(mapdict, lang):
     return mapdict.get(lang, lang)
 
 def attempt_translation(word, from_lang, to_lang, translator_function, translator_map):
+    TLS = {
+        "gg": ts.google,
+        "bd" : ts.baidu,
+        "bg" : ts.bing,
+        "it" : ts.itranslate
+    }
     try:
-        return translator_function(word, from_language=lmap(translator_map, from_lang), to_language=lmap(translator_map, to_lang)).lower()
+        return TLS[translator_function](word, from_language=lmap(translator_map, from_lang), to_language=lmap(translator_map, to_lang)).lower()
     except:
         return "*NOT_FOUND*"
 
 def translator_heuristic(word, from_lang, to_lang):
     # could add others https://pypi.org/project/translate-api/
-    translators = [(ts.google, LANGS_GOOGLE), (ts.baidu, {}), (ts.bing, {}), (ts.itranslate, {})]
+    translators = [("gg", LANGS_GOOGLE), ("bd", {}), ("bg", {}), ("it", {})]
     with Pool(len(translators)) as p:
         hypotheses = p.map(
             lambda translator, lmapping: attempt_translation(word, from_lang, to_lang, translator, lmapping), 
