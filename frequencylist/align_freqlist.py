@@ -243,8 +243,6 @@ def main_translation_service(main_lang, input_file, output_file):
                 continue
             row = aligned_row
         # row should only ever be an aligned row
-        print(word)
-        print(row)
         csv_row = aligned_row_to_csv(word, row, test_languages)
         print(csv_row)
         csv_rows.append(csv_row)
