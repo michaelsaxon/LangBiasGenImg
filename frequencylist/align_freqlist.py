@@ -271,7 +271,7 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
         print(csv_row)
         csv_rows.append(csv_row)
 
-    with open(output_file.replace("$$$","{start_line}_{end_line}"), "w") as f:
+    with open(output_file.replace("$$$",f"{start_line}_{end_line}"), "w") as f:
         f.writelines(csv_rows)
 
 
