@@ -189,7 +189,7 @@ def main_translation_service(main_lang, input_file, output_file):
             # we need to determine which is the best
             best_quality = 0
             for synset in synset_or_list:
-                aligned_row, quality = synset_word_best(synset, test_languages)
+                aligned_row, quality = synset_word_best(synset, word, test_languages)
                 if aligned_row is None:
                     continue
                 if quality >= best_quality:
@@ -200,7 +200,7 @@ def main_translation_service(main_lang, input_file, output_file):
                 continue
         else:
             # it's a single synset. let's parse and get the crosslingual words
-            aligned_row, _ = synset_word_best(synset_or_list, test_languages)
+            aligned_row, _ = synset_word_best(synset_or_list, word, test_languages)
             if aligned_row is None:
                 print("main: found a single word, no alignment across all langs")
                 continue
