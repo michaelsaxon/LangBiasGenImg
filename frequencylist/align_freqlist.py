@@ -168,7 +168,7 @@ def main_freqlist(main_lang, output_file):
 
 
 def synset_word_best(synset, word, from_lang, test_languages):
-    candidate_words = {language : translator_heuristic(word, from_lang,) for language in test_languages}
+    candidate_words = {language : translator_heuristic(word, from_lang, language) for language in test_languages}
     quality = 0
     candidates = {}
     for elem in synset:
