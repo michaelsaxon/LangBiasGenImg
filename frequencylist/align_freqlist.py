@@ -94,11 +94,12 @@ def attempt_translation(word, from_lang, to_lang, translator_function, translato
     except:
         return "*NOT_FOUND*"
 
+def simplified_translator_mapping(translator, lmapping):
+    return attempt_translation(word, from_lang, to_lang, translator, lmapping)
+
 def translator_heuristic(word, from_lang, to_lang):
     # could add others https://pypi.org/project/translate-api/
     translators = [("gg", LANGS_GOOGLE), ("bd", {}), ("bg", {}), ("it", {})]
-    def simplified_translator_mapping(translator, lmapping):
-        return attempt_translation(word, from_lang, to_lang, translator, lmapping)
     with Pool(len(translators)) as p:
         hypotheses = p.map(simplified_translator_mapping, translators)
     return hypotheses
