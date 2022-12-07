@@ -185,7 +185,6 @@ def main_freqlist(main_lang, output_file):
 
 
 def synset_word_best(synset, word, candidate_words, test_languages):
-    quality = 0
     candidates = {}
     for elem in synset:
         word = str(elem).split(":")[-1]
@@ -193,11 +192,10 @@ def synset_word_best(synset, word, candidate_words, test_languages):
         if lang not in test_languages:
             continue
         if word in candidate_words[lang]:
-            quality += 1
             candidates[lang] = word
     if len(test_languages) > len(candidates.keys()):
         print(f"Missing a language: {candidates}")
-    return candidates, quality
+    return candidates, len(candidates.keys())
 
 
 def meld_overlapping_dicts(list_of_dicts, target_key_set):
