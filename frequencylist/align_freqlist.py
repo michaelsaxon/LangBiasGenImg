@@ -196,6 +196,9 @@ def synset_word_best(synset, word, from_lang, test_languages):
         if word in candidate_words[lang]:
             quality += 1
             candidates[lang] = word
+    if len(test_languages) > len(candidates.keys()):
+        print("Missing a language")
+        return None, 0
     return candidates, quality
 
 
@@ -247,7 +250,7 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
                 print("main: found a single word, no alignment across all langs")
                 continue
             if quality < len(test_languages):
-                print("main: no aligned row across all langs for this synset (from a list)")
+                print("main: found a single word, no alignment across all langs")
                 continue
             row = aligned_row
         # row should only ever be an aligned row
