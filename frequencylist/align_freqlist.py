@@ -6,6 +6,7 @@ from babelnet.data.source import BabelSenseSource
 import json
 from collections import defaultdict
 import translators as ts
+from multiprocessing import Pool
 
 VALID_SOURCES = [
     BabelSenseSource.WN,
@@ -80,15 +81,20 @@ LANGS_GOOGLE = {
 def lmap(mapdict, lang):
     return mapdict.get(lang, lang)
 
+def attempt_translation(word, from_lang, to_lang, translator_function, translator_map):
+    try:
+        return translator_function(word, from_language=lmap(translator_map, from_lang), to_language=lmap(translator_map, to_lang)).lower()
+    except:
+        return "*NOT_FOUND*"
+
 def translator_heuristic(word, from_lang, to_lang):
-    hypotheses = []
-    translators = [(ts.google, LANGS_GOOGLE), (ts.baidu, {}), (ts.bing, {}), (ts.itranslate, {})]
-    for translator, lmapping in translators:
-        try:
-            hypotheses.append(translator(word, from_language=lmap(lmapping, from_lang), to_language=lmap(lmapping, to_lang)).lower())
-        finally:
-            continue
     # could add others https://pypi.org/project/translate-api/
+    translators = [(ts.google, LANGS_GOOGLE), (ts.baidu, {}), (ts.bing, {}), (ts.itranslate, {})]
+    with Pool(len(translators)) as p:
+        hypotheses = p.map(
+            lambda translator, lmapping: attempt_translation(word, from_lang, to_lang, translator, lmapping), 
+            translators
+        )
     return hypotheses
 
 # trying to improve this stuff:
@@ -172,6 +178,8 @@ def synset_word_best(synset, word, from_lang, test_languages):
     for elem in synset:
         word = str(elem).split(":")[-1]
         lang = str(elem.language).lower()
+        if lang not in test_languages:
+            continue
         if word in candidate_words[lang]:
             quality += 1
             candidates[lang] = word
@@ -198,9 +206,13 @@ def main_translation_service(main_lang, input_file, output_file):
             continue
         if type(synset_or_list) is list:
             # we need to determine which is the best
-            best_quality = 0
-            for synset in synset_or_list:
-                aligned_row, quality = synset_word_best(synset, word, main_lang, test_languages)
+            best_quality = 0            
+            with Pool(5) as p:
+                rows_quality = p.map(
+                    lambda synset: synset_word_best(synset, word, main_lang, test_languages),
+                    synset_or_list
+                )
+            for aligned_row, quality in rows_quality:
                 if aligned_row is None:
                     continue
                 if quality >= best_quality:
