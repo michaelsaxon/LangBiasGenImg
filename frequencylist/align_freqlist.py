@@ -226,6 +226,7 @@ def main_translation_service(main_lang, input_file, output_file, start_line, end
             print("main: coundn't find any synset for this word")
             continue
         if type(synset_or_list) is list:
+            print("testing a list of synset options")
             # we need to determine which is the best
             best_quality = 0  
             def simplified_synset_word_map(synset):
