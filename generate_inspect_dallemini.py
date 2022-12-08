@@ -5,7 +5,6 @@ import jax.numpy as jnp
 # Load models & tokenizer
 from dalle_mini import DalleBart, DalleBartProcessor
 from vqgan_jax.modeling_flax_vqgan import VQModel
-from transformers import CLIPProcessor, FlaxCLIPModel
 
 
 from flax.jax_utils import replicate
@@ -62,7 +61,8 @@ LANG_PROMPT_BITS = {
 @click.option('--output_dir', default='samples_demega')
 @click.option('--n_predictions', default=9)
 @click.option('--model_size', default="mega")
-def main(output_dir, n_predictions, model_size):
+@click.option('--input_csv', default="freq_list_translated.csv")
+def main(output_dir, n_predictions, model_size, input_csv):
 
     # check how many devices are available
     jax.local_device_count()
@@ -120,7 +120,7 @@ def main(output_dir, n_predictions, model_size):
 
 
 
-    prompts_base = open("frequencylist/freq_lists_gold.csv", "r").readlines()
+    prompts_base = open(f"frequencylist/{input_csv}", "r").readlines()
     index = prompts_base[0].strip().split(",")
     for line_no, line in enumerate(prompts_base[1:]):
         line = line.strip().split(",")
