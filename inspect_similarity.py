@@ -41,7 +41,7 @@ def main(analysis_dir, num_samples):
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
     model.to(device)
     
-    prompts_base = open("frequencylist/freq_lists_gold.csv", "r").readlines()
+    prompts_base = open("frequencylist/freq_lists_translated.csv", "r").readlines()
     out_lines = [prompts_base[0]]
 
     index = prompts_base[0].strip().split(",")
