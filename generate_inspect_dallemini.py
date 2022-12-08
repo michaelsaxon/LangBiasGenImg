@@ -61,7 +61,7 @@ LANG_PROMPT_BITS = {
 @click.option('--output_dir', default='samples_demega')
 @click.option('--n_predictions', default=9)
 @click.option('--model_size', default="mega")
-@click.option('--input_csv', default="freq_list_translated.csv")
+@click.option('--input_csv', default="freq_lists_translated.csv")
 def main(output_dir, n_predictions, model_size, input_csv):
 
     # check how many devices are available

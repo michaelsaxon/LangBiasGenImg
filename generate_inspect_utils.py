@@ -107,7 +107,7 @@ LANG_PROMPT_BITS = {
 @click.option('--output_dir', default='samples_sd1-4')
 @click.option('--n_predictions', default=9)
 @click.option('--model_id', default="CompVis/stable-diffusion-v1-4")
-@click.option('--input_csv', default="freq_list_translated.csv")
+@click.option('--input_csv', default="freq_lists_translated.csv")
 def main(output_dir, n_predictions, model_id, input_csv):
     model_id = model_id
     device = "cuda"
