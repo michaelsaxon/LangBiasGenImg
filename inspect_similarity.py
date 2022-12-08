@@ -34,7 +34,8 @@ def compare_by_lang(results_dict, main_lang = "en", similarity_func = avg_cos_si
 
 @click.command()
 @click.option('--analysis_dir', default='samples_sd2')
-def main(analysis_dir):
+@click.option('--num_samples', default=12)
+def main(analysis_dir, num_samples):
     device = "cuda"
     model = CLIPVisionModel.from_pretrained("openai/clip-vit-base-patch32")
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
@@ -49,14 +50,14 @@ def main(analysis_dir):
         line = line.strip().split(",")
         for idx in range(len(index)):
             # build a prompt based on the above templates from the 
-            fnames = [f"{analysis_dir}/{line_no}-{index[idx]}-{line[0]}-{i}.png" for i in range(9)]
+            fnames = [f"{analysis_dir}/{line_no}-{index[idx]}-{line[0]}-{i}.png" for i in range(num_samples)]
             image_embedding = get_image_embeddings(processor, model, fnames)
             results_dict[index[idx]] = image_embedding
         language_similarities = compare_by_lang(results_dict)
         print(line[0] + " " + str(language_similarities))
         out_lines.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
     
-    with open(f"results_{analysis_dir}.csv", "w") as f:
+    with open(f"{analysis_dir}/results.csv", "w") as f:
         f.writelines(out_lines)
 
 
