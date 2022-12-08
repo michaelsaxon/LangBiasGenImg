@@ -3,7 +3,7 @@ import torch
 from torch import autocast
 from diffusers import StableDiffusionPipeline
 from typing import Callable, List, Optional, Union
-
+import os
 
 # external implementation of the first two steps of the generation pipeline for stable diffusion
 # STEP 1: GET EMBEDDINGS
@@ -114,6 +114,8 @@ def main(output_dir, n_predictions, model_id, input_csv):
 
     pipe = StableDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
     pipe = pipe.to(device)
+
+    os.makedirs(output_dir, exist_ok=True)
 
     prompts_base = open(f"frequencylist/{input_csv}", "r").readlines()
     index = prompts_base[0].strip().split(",")

@@ -117,6 +117,7 @@ def main(output_dir, n_predictions, model_size, input_csv):
     def p_decode(indices, params):
         return vqgan.decode_code(indices, params=params)
 
+    os.makedirs(output_dir, exist_ok=True)
 
 
 
