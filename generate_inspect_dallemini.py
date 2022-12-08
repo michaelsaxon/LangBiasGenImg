@@ -23,7 +23,7 @@ import numpy as np
 from PIL import Image
 #from tqdm.notebook import trange
 
-
+import os
 
 # dalle-mega
 DALLE_MODELS = {
