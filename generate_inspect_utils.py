@@ -130,7 +130,7 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv):
             images = []
             for _ in range(split_batch):
                 with autocast("cuda"):
-                    images.append(pipe(prompt, guidance_scale=7.5, num_images_per_prompt=int(n_predictions / split_batch)).images)
+                    images += pipe(prompt, guidance_scale=7.5, num_images_per_prompt=int(n_predictions / split_batch)).images
             for i, im in enumerate(images):
                 fname = f"{line_no}-{index[idx]}-{line[0]}-{i}.png"
                 print(f"saving image {fname}...")
