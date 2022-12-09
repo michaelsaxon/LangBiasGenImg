@@ -18,7 +18,7 @@ TAIL = '''
 
 
 middle = ""
-prompts_base = open("frequencylist/freq_lists_gold.csv", "r").readlines()
+prompts_base = open("freq_lists_translated.csv", "r").readlines()
 index = prompts_base[0].strip().split(",")
 for line_no, line in enumerate(prompts_base[1:]):
     middle += '<tr style="background-color: black; color: white;"><td style="background-color: white;"></td>'
@@ -35,11 +35,11 @@ for line_no, line in enumerate(prompts_base[1:]):
         middle += "<td>"
         # build a prompt based on the above templates from the 
         word = index[idx]
-        for i in range(9):
+        for i in range(12):
             fname = f"{line_no}-{index[idx]}-{line[0]}-{i}.png"
             middle += f'<img src="{fname}"><br>\n'
         middle += "</td>\n"
     middle += "</tr>\n"
 
-with open("samples_demega/index.html","w") as f:
+with open("samples_translated/samples_sd1-1/index.html","w") as f:
     f.write(BASE+middle+TAIL)

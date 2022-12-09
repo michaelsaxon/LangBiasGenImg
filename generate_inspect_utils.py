@@ -106,9 +106,11 @@ LANG_PROMPT_BITS = {
 @click.command()
 @click.option('--output_dir', default='samples_sd1-4')
 @click.option('--n_predictions', default=9)
+@click.option('--split_batch', default=1)
 @click.option('--model_id', default="CompVis/stable-diffusion-v1-4")
 @click.option('--input_csv', default="freq_lists_translated.csv")
-def main(output_dir, n_predictions, model_id, input_csv):
+def main(output_dir, n_predictions, split_batch, model_id, input_csv):
+    assert n_predictions % split_batch == 0
     model_id = model_id
     device = "cuda"
 
@@ -125,9 +127,11 @@ def main(output_dir, n_predictions, model_id, input_csv):
             # build a prompt based on the above templates from the 
             prompt = LANG_PROMPT_BITS[index[idx]].replace("$$$", line[idx])
             print(f"generating {index[idx]}:{line[0]}, '{line[idx]}'")
-            with autocast("cuda"):
-                image = pipe(prompt, guidance_scale=7.5, num_images_per_prompt=n_predictions).images
-            for i, im in enumerate(image):
+            images = []
+            for _ in range(split_batch):
+                with autocast("cuda"):
+                    images.append(pipe(prompt, guidance_scale=7.5, num_images_per_prompt=n_predictions / split_batch).images)
+            for i, im in enumerate(images):
                 fname = f"{line_no}-{index[idx]}-{line[0]}-{i}.png"
                 print(f"saving image {fname}...")
                 im.save(f"{output_dir}/{fname}")
