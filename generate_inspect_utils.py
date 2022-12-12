@@ -122,9 +122,9 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv, start_line
 
     prompts_base = open(f"frequencylist/{input_csv}", "r").readlines()
     index = prompts_base[0].strip().split(",")
-    for line_no, line in enumerate(prompts_base[1:]):
+    for line_no, line in enumerate(start_line, prompts_base[1:]):
         line = line.strip().split(",")
-        for idx in range(start_line, len(index)):
+        for idx in range(len(index)):
             # build a prompt based on the above templates from the 
             prompt = LANG_PROMPT_BITS[index[idx]].replace("$$$", line[idx])
             print(f"generating {index[idx]}:{line[0]}, '{line[idx]}'")
