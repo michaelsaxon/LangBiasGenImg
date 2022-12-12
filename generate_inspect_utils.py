@@ -122,7 +122,8 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv, start_line
 
     prompts_base = open(f"frequencylist/{input_csv}", "r").readlines()
     index = prompts_base[0].strip().split(",")
-    for line_no, line in enumerate(prompts_base[start_line:]):
+    for line_no in range(start_line, len(prompts_base)):
+        line = prompts_base[line_no]
         line = line.strip().split(",")
         for idx in range(len(index)):
             # build a prompt based on the above templates from the 
