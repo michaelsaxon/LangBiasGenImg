@@ -109,7 +109,7 @@ LANG_PROMPT_BITS = {
 @click.option('--split_batch', default=1)
 @click.option('--model_id', default="CompVis/stable-diffusion-v1-4")
 @click.option('--input_csv', default="freq_lists_translated.csv")
-@click.option('--start_line', default=0)
+@click.option('--start_line', default=1)
 def main(output_dir, n_predictions, split_batch, model_id, input_csv, start_line):
     assert n_predictions % split_batch == 0
     model_id = model_id
@@ -122,7 +122,7 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv, start_line
 
     prompts_base = open(f"frequencylist/{input_csv}", "r").readlines()
     index = prompts_base[0].strip().split(",")
-    for line_no, line in enumerate(start_line, prompts_base[1:]):
+    for line_no, line in enumerate(prompts_base[start_line:]):
         line = line.strip().split(",")
         for idx in range(len(index)):
             # build a prompt based on the above templates from the 
