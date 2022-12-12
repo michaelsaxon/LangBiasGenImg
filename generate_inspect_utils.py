@@ -109,7 +109,8 @@ LANG_PROMPT_BITS = {
 @click.option('--split_batch', default=1)
 @click.option('--model_id', default="CompVis/stable-diffusion-v1-4")
 @click.option('--input_csv', default="freq_lists_translated.csv")
-def main(output_dir, n_predictions, split_batch, model_id, input_csv):
+@click.option('--start_line', default=0)
+def main(output_dir, n_predictions, split_batch, model_id, input_csv, start_line):
     assert n_predictions % split_batch == 0
     model_id = model_id
     device = "cuda"
@@ -123,7 +124,7 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv):
     index = prompts_base[0].strip().split(",")
     for line_no, line in enumerate(prompts_base[1:]):
         line = line.strip().split(",")
-        for idx in range(len(index)):
+        for idx in range(start_line, len(index)):
             # build a prompt based on the above templates from the 
             prompt = LANG_PROMPT_BITS[index[idx]].replace("$$$", line[idx])
             print(f"generating {index[idx]}:{line[0]}, '{line[idx]}'")
