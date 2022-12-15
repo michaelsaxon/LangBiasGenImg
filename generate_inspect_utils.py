@@ -103,6 +103,8 @@ LANG_PROMPT_BITS = {
 }
 
 
+
+# stabilityai/stable-diffusion-2
 @click.command()
 @click.option('--output_dir', default='samples_sd1-4')
 @click.option('--n_predictions', default=9)
