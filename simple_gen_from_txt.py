@@ -59,7 +59,7 @@ def main_stable_diffusion(output_dir, n_predictions, split_batch, model_id, inpu
 
     lines = open(input_txt, "r").readlines()
     for line_idx, line in enumerate(lines):
-        prompt = line.strip().split(",").lower()
+        prompt = line.strip().lower()
         print(f"generating {line_idx}: '{prompt}'")
         images = []
         for _ in range(split_batch):
@@ -130,7 +130,7 @@ def main_dalle(output_dir, n_predictions, model_size, input_txt):
 
     lines = open(input_txt, "r").readlines()
     for line_no, line in enumerate(lines):
-        prompt = line.strip().split(",")
+        prompt = line.strip().lower()
 
         print(f"generating {line_no}: '{prompt}'")
 
