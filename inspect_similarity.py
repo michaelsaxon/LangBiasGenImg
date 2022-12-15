@@ -32,18 +32,27 @@ def compare_by_lang(results_dict, main_lang = "en", similarity_func = avg_cos_si
         output_dict[lang] = similarity_func(results_dict[main_lang], results_dict[lang])
     return output_dict
 
+def lang_self_sim(results_dict, similarity_func = avg_cos_sim):
+    langs = results_dict.keys()
+    # evaluate pairwise similarity
+    output_dict = {}
+    for lang in langs:
+        output_dict[lang] = similarity_func(results_dict[lang], results_dict[lang])
+    return output_dict
+
+
 @click.command()
 @click.option('--analysis_dir', default='samples_sd2')
 @click.option('--num_samples', default=12)
-@click.option('--main_lang', default='en')
-def main(analysis_dir, num_samples, main_lang):
+def main(analysis_dir, num_samples):
     device = "cuda"
     model = CLIPVisionModel.from_pretrained("openai/clip-vit-base-patch32")
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
     model.to(device)
     
     prompts_base = open("frequencylist/freq_lists_translated.csv", "r").readlines()
-    out_lines = [prompts_base[0]]
+    out_lines_en = [prompts_base[0]]
+    out_lines_self_sim = [prompts_base[0]]
 
     index = prompts_base[0].strip().split(",")
     for line_no, line in enumerate(prompts_base[1:]):
@@ -54,12 +63,17 @@ def main(analysis_dir, num_samples, main_lang):
             fnames = [f"{analysis_dir}/{line_no}-{index[idx]}-{line[0]}-{i}.png" for i in range(num_samples)]
             image_embedding = get_image_embeddings(processor, model, fnames)
             results_dict[index[idx]] = image_embedding
-        language_similarities = compare_by_lang(results_dict, main_lang=main_lang)
+        language_similarities = compare_by_lang(results_dict)
+        self_sims = lang_self_sim(results_dict)
         print(line[0] + " " + str(language_similarities))
-        out_lines.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
+        out_lines_en.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
+        out_lines_self_sim.append(",".join([str(self_sims[index]) for index in index]) + "\n")
     
-    with open(f"{analysis_dir}/results_{main_lang}.csv", "w") as f:
-        f.writelines(out_lines)
+    with open(f"{analysis_dir}/results_en.csv", "w") as f:
+        f.writelines(out_lines_en)
+
+    with open(f"{analysis_dir}/results_self.csv", "w") as f:
+        f.writelines(out_lines_self_sim)
 
 
 if __name__ == "__main__":
