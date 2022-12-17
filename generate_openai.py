@@ -30,7 +30,7 @@ LANG_PROMPT_BITS = {
 @click.option('--split_batch', default=2)
 @click.option('--input_csv', default="freq_lists_translated.csv")
 @click.option('--start_line', default=1)
-def main(output_dir, n_predictions, split_batch, model_id, input_csv, start_line):
+def main(output_dir, n_predictions, split_batch, input_csv, start_line):
     assert n_predictions % split_batch == 0
     os.makedirs(output_dir, exist_ok=True)
 
