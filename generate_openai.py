@@ -1,11 +1,10 @@
 import click
-import torch
-from torch import autocast
-from diffusers import StableDiffusionPipeline
 from typing import Callable, List, Optional, Union
 import os
 import openai
 import urllib.request
+from tqdm import tqdm
+import time
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -26,8 +25,8 @@ LANG_PROMPT_BITS = {
 # stabilityai/stable-diffusion-2
 @click.command()
 @click.option('--output_dir', default='samples_dalle2')
-@click.option('--n_predictions', default=12)
-@click.option('--split_batch', default=2)
+@click.option('--n_predictions', default=10)
+@click.option('--split_batch', default=1)
 @click.option('--input_csv', default="freq_lists_translated.csv")
 @click.option('--start_line', default=1)
 def main(output_dir, n_predictions, split_batch, input_csv, start_line):
@@ -36,7 +35,7 @@ def main(output_dir, n_predictions, split_batch, input_csv, start_line):
 
     prompts_base = open(f"frequencylist/{input_csv}", "r").readlines()
     index = prompts_base[0].strip().split(",")
-    for line_idx in range(start_line, len(prompts_base)):
+    for line_idx in tqdm(range(start_line, len(prompts_base))):
         line = prompts_base[line_idx]
         line_no = line_idx - 1
         line = line.strip().split(",")
@@ -54,6 +53,8 @@ def main(output_dir, n_predictions, split_batch, input_csv, start_line):
                     fname = f"{line_no}-{index[idx]}-{line[0]}-{i+j*int(n_predictions / split_batch)}.png"
                     print(f"retrieving and saving image {fname}...")
                     urllib.request.urlretrieve(response['data'][i]['url'], f"{output_dir}/{fname}")
+                # dumbass rate limit to DALLE API
+                time.sleep(60)
 
 
 if __name__ == "__main__":
