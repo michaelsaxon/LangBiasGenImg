@@ -60,7 +60,7 @@ def main(output_dir, n_predictions, split_batch, input_csv, start_line):
                 except Exception as e:
                     fname = f"{line_no}-{index[idx]}-{line[0]}-failure.log"
                     print(f"Exception for request with prompt {prompt}")
-                    with open(f"{output_dir}/{fname}") as f:
+                    with open(f"{output_dir}/{fname}", "w") as f:
                         f.write(str(e))
                 remaining_time = math.ceil(60 - (time.time() - start_time))
                 print(f"Sleeping {remaining_time} s to not make OpenAI's api mad at me...")

@@ -44,7 +44,8 @@ def lang_self_sim(results_dict, similarity_func = avg_cos_sim):
     return output_dict
 
 # produce a language-level index by sampling a bunch of images
-def generate_index()
+def generate_index(analysis_dir, sample_counting_range, freqlist):
+    
 
 @click.command()
 @click.option('--analysis_dir', default='samples_sd2')
