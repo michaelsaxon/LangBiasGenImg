@@ -25,6 +25,7 @@ def avg_cos_sim(vec_list_1, vec_list_2):
         sims_sum += float(F.cosine_similarity(vec_list_1, vec_list_2[i].unsqueeze(0)).sum())
     return sims_sum / sims_num
 
+# query cross-consistency
 def compare_by_lang(results_dict, main_lang = "en", similarity_func = avg_cos_sim):
     langs = results_dict.keys()
     # evaluate pairwise similarity
@@ -33,6 +34,7 @@ def compare_by_lang(results_dict, main_lang = "en", similarity_func = avg_cos_si
         output_dict[lang] = similarity_func(results_dict[main_lang], results_dict[lang])
     return output_dict
 
+# query self-sim by lang
 def lang_self_sim(results_dict, similarity_func = avg_cos_sim):
     langs = results_dict.keys()
     # evaluate pairwise similarity
@@ -41,8 +43,8 @@ def lang_self_sim(results_dict, similarity_func = avg_cos_sim):
         output_dict[lang] = similarity_func(results_dict[lang], results_dict[lang])
     return output_dict
 
-#def cross_sim
-
+# produce a language-level index by sampling a bunch of images
+def generate_index()
 
 @click.command()
 @click.option('--analysis_dir', default='samples_sd2')
