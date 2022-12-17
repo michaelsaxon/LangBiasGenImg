@@ -2,7 +2,7 @@ BASE = '''
 <html>
 <head>
 <style>
-img   {width: 90px; height: 90px;}
+img   {width: 50px; height: 50px;}
 table    {margin: auto;}
 </style>
 </head>
@@ -16,6 +16,7 @@ TAIL = '''
 </html>
 '''
 
+folders = ['samples_demega', 'samples_demini', 'samples_sd1-1',  'samples_sd1-2',  'samples_sd1-4', 'samples_cv2', 'samples_sd2']
 
 middle = ""
 prompts_base = open("freq_lists_translated.csv", "r").readlines()

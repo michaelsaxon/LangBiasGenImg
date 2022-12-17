@@ -4,6 +4,7 @@ from transformers import CLIPProcessor, CLIPVisionModel
 from collections import defaultdict
 import torch.nn.functional as F
 
+
 from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -39,6 +40,8 @@ def lang_self_sim(results_dict, similarity_func = avg_cos_sim):
     for lang in langs:
         output_dict[lang] = similarity_func(results_dict[lang], results_dict[lang])
     return output_dict
+
+#def cross_sim
 
 
 @click.command()

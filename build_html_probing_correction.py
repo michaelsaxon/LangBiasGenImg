@@ -16,8 +16,7 @@ TAIL = '''
 </html>
 '''
 
-PROMPTS = """
-a photograph of a dog
+PROMPTS = """a photograph of a dog
 a photograph of a big dog
 a photograph of a big dog in a field
 a photograph of a big dog playing frisbee in a field
@@ -49,19 +48,34 @@ un foto de un perro hecho de fuego comiendo pizza en la luna
 火でできた犬の写真
 火でできた大型犬の写真
 月に立っている火でできた犬の写真
-月に立っていてピザを食べる火でできた犬の写真
-"""
+月に立っていてピザを食べる火でできた犬の写真"""
 
 
-middle = ""
-for line_no, line in enumerate(PROMPTS):
-    middle += f'<tr style="background-color: black; color: white;"><td style="background-color: white;">{line.strip()}</td></tr>\n<tr>\n<td>\n'
-    # the images
-    for i in range(12):
-        fname = f"{line_no}-{i}.png"
-        middle += f'<img src="{fname}">'
-    middle += "\n</td>\n"
-    middle += "</tr>\n"
+def gen_middle_self():
+    middle = ""
+    for line_no, line in enumerate(PROMPTS.split("\n")):
+        middle += f'<tr style="background-color: black; color: white;"><td>{line.strip()}</td></tr>\n<tr>\n<td>\n'
+        # the images
+        for i in range(12):
+            fname = f"{line_no}-{i}.png"
+            middle += f'<img src="{fname}">'
+        middle += "\n</td>\n"
+        middle += "</tr>\n"
+    return middle
 
-with open("samples_translated/samples_sd1-1/index.html","w") as f:
-    f.write(BASE+middle+TAIL)
+def gen_middle_all():
+    middle = ""
+    for line_no, line in enumerate(PROMPTS.split("\n")):
+        middle += f'<tr style="background-color: black; color: white; text-align: center;"><td style="background-color: white;"></td><td>{line.strip()}</td></tr>\n'
+        for folder in ['demega', 'demini', 'sd1-4',  'sd2']:
+            middle += f'<tr>\n<td style="border-right: 1pt solid rgb(150,0,0); color: rgb(150,0,0); background-color: rgb(255,240,240);">{folder}</td>\n<td>\n'
+            # the images
+            for i in range(12):
+                fname = f"simple_{folder}/{line_no}-{i}.png"
+                middle += f'<img src="{fname}">'
+            middle += "\n</td>\n"
+            middle += "</tr>\n"
+    return middle
+
+with open("simples/index.html","w") as f:
+    f.write(BASE+gen_middle_all()+TAIL)
