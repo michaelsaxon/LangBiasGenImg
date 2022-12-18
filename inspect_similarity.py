@@ -121,7 +121,7 @@ def main(analysis_dir, num_samples, fingerprint_selection_count, main_language):
 
         print(f"{main_language} SIM " + line[0] + " " + str(language_similarities))
         print("self SIM " + line[0] + " " + str(language_similarities))
-        print("specific " + line[0] + " " + str(language_similarities))
+        print("specific " + line[0] + " " + str(inverse_specificity))
 
         out_lines_main_sim.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
         out_lines_self_sim.append(",".join([str(self_sims[index]) for index in index]) + "\n")
