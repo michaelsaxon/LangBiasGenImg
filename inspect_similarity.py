@@ -87,7 +87,7 @@ def main(analysis_dir, num_samples, fingerprint_selection_count):
     fingerprints = precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, fingerprint_selection_count)
     # language fingerprint self-similarity (negative diversity)
     for lang in index:
-        cuda_avg_cos_sim = lambda x,y: avg_cos_sim(x.to(device), y.to(device), True)
+        cuda_avg_cos_sim = lambda x,y,_: avg_cos_sim(x.to(device), y.to(device), True)
         self_sim = lang_self_sim(fingerprints, similarity_func= cuda_avg_cos_sim)
         print(f"DIVERSITY {lang}: {self_sim}")
     
