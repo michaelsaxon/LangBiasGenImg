@@ -43,6 +43,17 @@ def lang_self_sim(results_dict, similarity_func = avg_cos_sim):
         output_dict[lang] = similarity_func(results_dict[lang], results_dict[lang], True)
     return output_dict
 
+# query self-sim by lang
+def lang_cross_sim(results_dict_1, results_dict_2, similarity_func = avg_cos_sim):
+    # suggest using larger vector as results_dict_1
+    langs = results_dict_1.keys()
+    # evaluate pairwise similarity
+    output_dict = {}
+    for lang in langs:
+        output_dict[lang] = similarity_func(results_dict_1[lang], results_dict_2[lang], False)
+    return output_dict
+
+
 # results dict is a language-indexed dictionary of the gpu-placed word matrices
 # the fingerprint dict is identical in structure but not tied to a word.
 
@@ -81,35 +92,50 @@ def main(analysis_dir, num_samples, fingerprint_selection_count, main_language):
     prompts_base = open("frequencylist/freq_lists_translated.csv", "r").readlines()
     index = prompts_base[0].strip().split(",")
 
-    out_lines_en = [prompts_base[0]]
+    out_lines_main_sim = [prompts_base[0]]
     out_lines_self_sim = [prompts_base[0]]
+    out_lines_main_spec = [prompts_base[0]]
 
     # collect the fingerprints for each language in this model
     fingerprints = precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, fingerprint_selection_count)
     # language fingerprint self-similarity (negative diversity)
-    for lang in index:
-        self_sim = lang_self_sim(fingerprints)
-        print(f"DIVERSITY {lang}: {self_sim}")
+    inverse_diversity = lang_self_sim(fingerprints)
+    print(f"INVERSE_DIVERSITY: {inverse_diversity}")
+    with open(f"{analysis_dir}/language_diversity.csv", "w") as f:
+        f.writelines([prompts_base[0], ",".join([str(inverse_diversity[index]) for index in index]) + "\n"])
     
     for line_no, line in enumerate(prompts_base[1:]):
         results_dict = defaultdict(list)
         line = line.strip().split(",")
+        
+        # collect this languages embeddings
         for idx in range(len(index)):
             # build a prompt based on the above templates from the 
             fnames = [f"{analysis_dir}/{line_no}-{index[idx]}-{line[0]}-{i}.png" for i in range(num_samples)]
             image_embedding = get_image_embeddings(processor, model, fnames)
             results_dict[index[idx]] = image_embedding
+        
         language_similarities = compare_by_lang(results_dict, main_lang=main_language)
         self_sims = lang_self_sim(results_dict)
-        print(line[0] + " " + str(language_similarities))
-        out_lines_en.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
+        inverse_specificity = lang_cross_sim(fingerprints, results_dict)
+
+        print(f"{main_language} SIM " + line[0] + " " + str(language_similarities))
+        print("self SIM " + line[0] + " " + str(language_similarities))
+        print("specific " + line[0] + " " + str(language_similarities))
+
+        out_lines_main_sim.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
         out_lines_self_sim.append(",".join([str(self_sims[index]) for index in index]) + "\n")
-    
-    with open(f"{analysis_dir}/results_en.csv", "w") as f:
-        f.writelines(out_lines_en)
+        out_lines_main_spec.append(",".join([str(inverse_specificity[index]) for index in index]) + "\n")
+        
+    with open(f"{analysis_dir}/results_{main_language}.csv", "w") as f:
+        f.writelines(out_lines_main_sim)
 
     with open(f"{analysis_dir}/results_self.csv", "w") as f:
         f.writelines(out_lines_self_sim)
+
+    with open(f"{analysis_dir}/results_specific.csv", "w") as f:
+        f.writelines(out_lines_main_spec)
+    
 
 
 if __name__ == "__main__":
