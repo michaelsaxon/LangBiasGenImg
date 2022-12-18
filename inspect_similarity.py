@@ -63,7 +63,7 @@ def precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, 
             # sample a number in the correct range
             img_idx = random.randrange(number_spec_range)
             fnames.append(f"{analysis_dir}/{line_no}-{index[idx]}-{line[0]}-{img_idx}.png")
-        fingerprints[index[idx]] = get_image_embeddings(processor, model, fnames).cpu()
+        fingerprints[index[idx]] = get_image_embeddings(processor, model, fnames)
     return fingerprints
 
 
@@ -91,8 +91,6 @@ def main(analysis_dir, num_samples, fingerprint_selection_count):
         self_sim = lang_self_sim(fingerprints, similarity_func= cuda_avg_cos_sim)
         print(f"DIVERSITY {lang}: {self_sim}")
     
-    assert False
-
     for line_no, line in enumerate(prompts_base[1:]):
         results_dict = defaultdict(list)
         line = line.strip().split(",")
