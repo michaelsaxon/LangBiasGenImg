@@ -17,12 +17,12 @@ def get_image_embeddings(processor, model, fnames):
     outputs = model(**inputs)
     return outputs.pooler_output.squeeze()
 
-def avg_cos_sim(vec_list_1, vec_list_2):
+def avg_cos_sim(vec_list_1, vec_list_2, is_self_sim = False):
     # this is O(n^2) lmao
     sims_sum = 0
     sims_num = vec_list_1.shape[0] * vec_list_2.shape[0]
     for i in range(vec_list_2.shape[0]):
-        sims_sum += float(F.cosine_similarity(vec_list_1, vec_list_2[i].unsqueeze(0)).sum())
+        sims_sum += float(F.cosine_similarity(vec_list_1, vec_list_2[i].unsqueeze(0)).sum() - 1 * is_self_sim)
     return sims_sum / sims_num
 
 # query cross-consistency
@@ -31,7 +31,7 @@ def compare_by_lang(results_dict, main_lang = "en", similarity_func = avg_cos_si
     # evaluate pairwise similarity
     output_dict = {}
     for lang in langs:
-        output_dict[lang] = similarity_func(results_dict[main_lang], results_dict[lang])
+        output_dict[lang] = similarity_func(results_dict[main_lang], results_dict[lang], lang == main_lang)
     return output_dict
 
 # query self-sim by lang
@@ -40,7 +40,7 @@ def lang_self_sim(results_dict, similarity_func = avg_cos_sim):
     # evaluate pairwise similarity
     output_dict = {}
     for lang in langs:
-        output_dict[lang] = similarity_func(results_dict[lang], results_dict[lang])
+        output_dict[lang] = similarity_func(results_dict[lang], results_dict[lang], True)
     return output_dict
 
 # results dict is a language-indexed dictionary of the gpu-placed word matrices
@@ -87,7 +87,7 @@ def main(analysis_dir, num_samples, fingerprint_selection_count):
     fingerprints = precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, fingerprint_selection_count)
     # language fingerprint self-similarity (negative diversity)
     for lang in index:
-        cuda_avg_cos_sim = lambda x,y: avg_cos_sim(x.to(device), y.to(device))
+        cuda_avg_cos_sim = lambda x,y: avg_cos_sim(x.to(device), y.to(device), True)
         self_sim = lang_self_sim(fingerprints, similarity_func= cuda_avg_cos_sim)
         print(f"DIVERSITY {lang}: {self_sim}")
     
