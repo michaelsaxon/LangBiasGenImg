@@ -71,7 +71,8 @@ def precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, 
 @click.option('--analysis_dir', default='samples_sd2')
 @click.option('--num_samples', default=12)
 @click.option('--fingerprint_selection_count', default=100)
-def main(analysis_dir, num_samples, fingerprint_selection_count):
+@click.option('--main_language', default="en")
+def main(analysis_dir, num_samples, fingerprint_selection_count, main_language):
     device = "cuda"
     model = CLIPVisionModel.from_pretrained("openai/clip-vit-base-patch32")
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
@@ -87,8 +88,7 @@ def main(analysis_dir, num_samples, fingerprint_selection_count):
     fingerprints = precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, fingerprint_selection_count)
     # language fingerprint self-similarity (negative diversity)
     for lang in index:
-        cuda_avg_cos_sim = lambda x,y,_: avg_cos_sim(x.to(device), y.to(device), True)
-        self_sim = lang_self_sim(fingerprints, similarity_func= cuda_avg_cos_sim)
+        self_sim = lang_self_sim(fingerprints)
         print(f"DIVERSITY {lang}: {self_sim}")
     
     for line_no, line in enumerate(prompts_base[1:]):
@@ -99,7 +99,7 @@ def main(analysis_dir, num_samples, fingerprint_selection_count):
             fnames = [f"{analysis_dir}/{line_no}-{index[idx]}-{line[0]}-{i}.png" for i in range(num_samples)]
             image_embedding = get_image_embeddings(processor, model, fnames)
             results_dict[index[idx]] = image_embedding
-        language_similarities = compare_by_lang(results_dict)
+        language_similarities = compare_by_lang(results_dict, main_lang=main_language)
         self_sims = lang_self_sim(results_dict)
         print(line[0] + " " + str(language_similarities))
         out_lines_en.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
