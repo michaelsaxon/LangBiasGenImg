@@ -47,7 +47,7 @@ def lang_self_sim(results_dict, similarity_func = avg_cos_sim):
 # the fingerprint dict is identical in structure but not tied to a word.
 
 # produce a language-level index by precomputing the n=0 image for every word, language pair
-def precompute_fingerprint_matrix(processor, model, prompts_base, selection_count, number_spec_range = 12):
+def precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, selection_count, number_spec_range = 12):
     fingerprints = {}
     index = prompts_base[0].strip().split(",")
     if selection_count >= len(prompts_base) - 1 or selection_count == -1:
@@ -83,7 +83,7 @@ def main(analysis_dir, num_samples, fingerprint_selection_count):
     out_lines_self_sim = [prompts_base[0]]
 
     # collect the fingerprints for each language in this model
-    fingerprints = precompute_fingerprint_matrix(processor, model, prompts_base, fingerprint_selection_count)
+    fingerprints = precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, fingerprint_selection_count)
     # language fingerprint self-similarity (negative diversity)
     for lang in index:
         cuda_avg_cos_sim = lambda x,y: avg_cos_sim(x.to(device), y.to(device))
