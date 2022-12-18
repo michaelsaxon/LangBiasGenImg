@@ -126,13 +126,21 @@ def main(analysis_dir, num_samples, fingerprint_selection_count, main_language):
         self_sims = lang_self_sim(results_dict)
         inverse_specificity = lang_cross_sim(fingerprints, results_dict)
 
+        # zero out if there's an error log for each word
+        for language in index:
+            if os.path.isfile(f"{analysis_dir}/{line_no}-{language}-{line[0]}-failure.log"):
+                language_similarities[language] = "---"
+                self_sims[language] = "---"
+                inverse_specificity[language] = "---"
+        
+
         print(f"{main_language} SIM " + line[0] + " " + str(language_similarities))
-        print("self SIM " + line[0] + " " + str(language_similarities))
+        print("self SIM " + line[0] + " " + str(self_sims))
         print("specific " + line[0] + " " + str(inverse_specificity))
 
-        out_lines_main_sim.append(",".join([str(language_similarities[index]) for index in index]) + "\n")
-        out_lines_self_sim.append(",".join([str(self_sims[index]) for index in index]) + "\n")
-        out_lines_main_spec.append(",".join([str(inverse_specificity[index]) for index in index]) + "\n")
+        out_lines_main_sim.append(",".join([str(language_similarities[language]) for language in index]) + "\n")
+        out_lines_self_sim.append(",".join([str(self_sims[language]) for language in index]) + "\n")
+        out_lines_main_spec.append(",".join([str(inverse_specificity[language]) for language in index]) + "\n")
         
     with open(f"{analysis_dir}/results_{main_language}.csv", "w") as f:
         f.writelines(out_lines_main_sim)
