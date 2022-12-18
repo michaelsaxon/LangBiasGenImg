@@ -53,11 +53,12 @@ def precompute_fingerprint_matrix(processor, model, prompts_base, analysis_dir, 
     if selection_count >= len(prompts_base) - 1 or selection_count == -1:
         use_lines = prompts_base[1:]
     else:
-        use_lines = random.sample(prompts_base[1:], selection_count)
+        use_lines = random.sample(range(selection_count))
     # extract a fingerprint for each language
     for idx in range(len(index)):
         fnames = []
-        for line_no, line in enumerate(use_lines):
+        for line_no in use_lines:
+            line = prompts_base[line_no + 1]
             line = line.strip().split(",")
             # sample a number in the correct range
             img_idx = random.randrange(number_spec_range)
