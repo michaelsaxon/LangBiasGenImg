@@ -1,0 +1,115 @@
+\documentclass{article}
+\usepackage{polyglossia}
+\setmainlanguage{english}
+\setmainfont{Times New Roman}
+
+\newfontfamily\Bera{Bitstream Vera Sans Mono}[Scale=0.85]
+
+
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{tikz}
+\usepackage{layout}
+\usetikzlibrary{positioning}
+\usepackage{lipsum}
+\setlength{\fboxsep}{0pt}
+\setlength{\parindent}{0pt}
+\geometry{
+    paperwidth=14.7in,
+    paperheight=12.5in,
+    textwidth=9in,
+    textheight=9in,
+    left=0mm, top=0mm, bottom=0mm, right=0mm, margin=0mm,
+    lmargin=0pt,
+    rmargin=0pt,
+    tmargin=0pt,
+    bmargin=0pt,
+    headheight=0pt,
+    headsep=0pt,
+    footnotesep=0pt,
+    footskip=0pt,
+    marginpar=0pt
+}
+\usepackage{xeCJK}
+\newcommand{\hebrew}{\fontspec{David CLM}}
+\newcommand{\whitevert}[1]{\draw[white, thick] ({#1},1) -- ({#1},0);}
+%\newcommand{\colorhoriz}[2]{\draw[{#1}, thick] (-1,{#2}) -- (14.2,{#2});}
+\begin{document}
+\begin{tikzpicture}
+\filldraw [gray] (-1,1) circle (0pt);
+
+% left half label
+\fill[color=black, fill=black](0,0) rectangle (7in, 1);
+\whitevert{1in}
+\whitevert{2in}
+\whitevert{3in}
+\whitevert{4in}
+\whitevert{5in}
+\whitevert{6in}
+\node[inner sep=0pt, text=white] (base) at (0.25in,0.75){EN};
+\node[inner sep=0pt, text=white] (base) at (1.25in,0.75){ES};
+\node[inner sep=0pt, text=white] (base) at (2.25in,0.75){DE};
+\node[inner sep=0pt, text=white] (base) at (3.25in,0.75){ZH};
+\node[inner sep=0pt, text=white] (base) at (4.25in,0.75){JP};
+\node[inner sep=0pt, text=white] (base) at (5.25in,0.75){HE};
+\node[inner sep=0pt, text=white] (base) at (6.25in,0.75){ID};
+
+
+% right half label
+\fill[color=black, fill=orange](7.2in,0) rectangle (14.2in, 1);
+\whitevert{8.2in}
+\whitevert{9.2in}
+\whitevert{10.2in}
+\whitevert{11.2in}
+\whitevert{12.2in}
+\whitevert{13.2in}
+\node[inner sep=0pt, text=white] (base) at (7.2in+0.25in,0.75){EN};
+\node[inner sep=0pt, text=white] (base) at (7.2in+1.25in,0.75){ES};
+\node[inner sep=0pt, text=white] (base) at (7.2in+2.25in,0.75){DE};
+\node[inner sep=0pt, text=white] (base) at (7.2in+3.25in,0.75){ZH};
+\node[inner sep=0pt, text=white] (base) at (7.2in+4.25in,0.75){JP};
+\node[inner sep=0pt, text=white] (base) at (7.2in+5.25in,0.75){HE};
+\node[inner sep=0pt, text=white] (base) at (7.2in+6.25in,0.75){ID};
+
+
+
+% left half captions
+% 0.5-6.5, 0.3
+LEFTCAPTIONS
+
+% right half captions
+% 7.2+0.5 to 7.2+6.5, 0.3
+RIGHTCAPTIONS
+
+%left half you can place an image centered at x: every 1in from 0.5-6.5; y: every 1in from -0.5 to -11.5
+
+LEFTIMAGES 
+
+%right half you can place an image centered at x: every 1in from 7.7-6.5; y: every 1in from -0.5 to -11.5
+
+RIGHTIMAGES
+
+
+% defining the color side labels for the models
+\draw[red!60, line width=0.1cm] (-0.05cm,0) -- (-0.05cm,-2.95in);
+\node[inner sep=0pt, text=red!60, rotate=90] (base) at (-0.5,-1.5in)
+    {\huge \Bera{DallE mini-mega}};
+\draw[blue!60, line width=0.1cm] (-0.05cm,-3in) -- (-0.05cm,-5.95in);
+\node[inner sep=0pt, text=blue!60, rotate=90] (base) at (-0.5,-4.5in)
+    {\huge \Bera{StableDiffusion 1.4}};
+\draw[black!30!green!60, line width=0.1cm] (-0.05cm,-6in) -- (-0.05cm,-8.95in);
+\node[inner sep=0pt, text=black!30!green!60, rotate=90] (base) at (-0.5,-7.5in)
+    {\huge \Bera{StableDiffusion 2}};
+\draw[black!20!blue!80!red!80, line width=0.1cm] (-0.05cm,-9in) -- (-0.05cm,-12in);
+\node[inner sep=0pt, text=black!20!blue!80!red!80, rotate=90] (base) at (-0.5,-10.5in)
+    {\huge \Bera{DallE 2}};
+
+\draw[red!60, line width=0.1cm] (7.2in-0.05cm,0) -- (7.2in-0.05cm,-2.95in);
+\draw[blue!60, line width=0.1cm] (7.2in-0.05cm,-3in) -- (7.2in-0.05cm,-5.95in);
+\draw[black!30!green!60, line width=0.1cm] (7.2in-0.05cm,-6in) -- (7.2in-0.05cm,-8.95in);
+\draw[black!20!blue!80!red!80, line width=0.1cm] (7.2in-0.05cm,-9in) -- (7.2in-0.05cm,-12in);
+
+\end{tikzpicture}
+
+
+\end{document}
