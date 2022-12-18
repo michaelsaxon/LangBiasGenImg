@@ -34,13 +34,16 @@ def generate_images_vert(fname_base, start_point_y, x_point, spacing=1, fidx_sta
         outstr += imgcoords(savefname, x, y)
     return outstr
 
-def main(meta_folder_dir="/Users/mssaxon/samples_translated", 
-    folder_1 = "samples_demega", 
-    folder_2 = "samples_sd1-4", 
-    folder_3 = "samples_sd2", 
-    folder_4 = "samples_dalle2", 
-    word_1 = "dog", 
-    word_2 = "airplane"):
+@click.command()
+@click.option('--meta_folder_dir', default="/Users/mssaxon/samples_translated")
+@click.option('--folder_1', default = "samples_demega")
+@click.option('--folder_2', default = "samples_sd1-4")
+@click.option('--folder_3', default = "samples_sd2")
+@click.option('--folder_4', default = "samples_dalle2")
+@click.option('--word_1', default = "dog")
+@click.option('--word_2', default = "airplane")
+@click.option('--single_half', is_flag = True)
+def main_multi_model(meta_folder_dir, folder_1, folder_2, folder_3, folder_4, word_1, word_2, single_half):
 
     prompts_base = open("/Users/mssaxon/freq_lists_translated.csv", "r").readlines()
 
@@ -49,7 +52,10 @@ def main(meta_folder_dir="/Users/mssaxon/samples_translated",
     word_line_1 = index.index(word_1)
     word_line_2 = index.index(word_2)
 
-    source_base = open("base.tex", "r").read()
+    if not single_half:
+        source_base = open("base_twohalf.tex", "r").read()
+    else:
+        source_base = open("base_onehalf.tex", "r").read()
 
     left_captions = generate_title(prompts_base[word_line_1].strip().split(","))
     right_captions = generate_title(prompts_base[word_line_2].strip().split(","), 7.7)
@@ -77,4 +83,4 @@ def main(meta_folder_dir="/Users/mssaxon/samples_translated",
 
 
 if __name__ == "__main__":
-    main()
+    main_multi_model()

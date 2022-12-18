@@ -1,17 +1,24 @@
 import click
-from PIL import Image
+from PIL import Image, ImageFile
 from transformers import CLIPProcessor, CLIPVisionModel
 from collections import defaultdict
 import torch.nn.functional as F
 import random
+import os
 
-from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 "samples-11-30-7_5-flg1/0-en-dog-0.png"
 
+# if image exists, open it. Else, generate 50x50 black
+def open_image_if_exists(fname):
+    if os.path.isfile(fname):
+        return Image.open(fname, "r")
+    else:
+        return Image.new('RGB', (50, 50), (0, 0, 0))
+
 def get_image_embeddings(processor, model, fnames):
-    images = [Image.open(fname, "r") for fname in fnames]
+    images = [open_image_if_exists(fname) for fname in fnames]
     inputs = processor(images=images, return_tensors="pt")
     inputs.to(model.device)
     outputs = model(**inputs)
