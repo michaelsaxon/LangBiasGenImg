@@ -29,7 +29,7 @@ def avg_cos_sim(vec_list_1, vec_list_2, is_self_sim = False):
     sims_sum = 0
     sims_num = vec_list_1.shape[0] * vec_list_2.shape[0]
     for i in range(vec_list_2.shape[0]):
-        sims_sum += float(F.cosine_similarity(vec_list_1, vec_list_2[i].unsqueeze(0)).sum() - 1 * is_self_sim)
+        sims_sum += float(F.cosine_similarity(vec_list_1, vec_list_2[i].unsqueeze(0)).sum() - vec_list_1.shape[0] * is_self_sim)
     return sims_sum / sims_num
 
 # query cross-consistency
