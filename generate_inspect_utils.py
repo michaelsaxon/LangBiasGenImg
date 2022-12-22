@@ -1,7 +1,7 @@
 import click
 import torch
 from torch import autocast
-from diffusers import StableDiffusionPipeline
+from diffusers import StableDiffusionPipeline, AltDiffusionPipeline
 from typing import Callable, List, Optional, Union
 import os
 
@@ -103,7 +103,7 @@ LANG_PROMPT_BITS = {
 }
 
 
-
+# BAAI/AltDiffusion-m9
 # stabilityai/stable-diffusion-2
 @click.command()
 @click.option('--output_dir', default='samples_sd1-4')
@@ -117,7 +117,10 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv, start_line
     model_id = model_id
     device = "cuda"
 
-    pipe = StableDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
+    if model_id == "BAAI/AltDiffusion-m9":
+        pipe = AltDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
+    else:    
+        pipe = StableDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
     pipe = pipe.to(device)
 
     os.makedirs(output_dir, exist_ok=True)

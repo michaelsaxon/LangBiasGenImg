@@ -20,6 +20,16 @@ def generate_title(words_line, start_point_x=0.5, y_point=0.3, spacing=1):
         outstr += textcoords(word, str(x) + "in", str(y_point))
     return outstr
 
+
+def generate_title_wordlist(word_list, start_point_x=0.5, y_point=0.3, spacing=1):
+    outstr = ""
+    assert len(word_list) == 7
+    for i, word in enumerate(word_list):
+        x = start_point_x + spacing * i
+        outstr += textcoords(word, str(x) + "in", str(y_point))
+    return outstr
+
+
 def generate_images_vert(fname_base, start_point_y, x_point, spacing=1, fidx_start=0, col_len=3):
     outstr = ""
     for i in range(col_len):
@@ -34,6 +44,12 @@ def generate_images_vert(fname_base, start_point_y, x_point, spacing=1, fidx_sta
         outstr += imgcoords(savefname, x, y)
     return outstr
 
+
+
+
+
+
+# the code to gen figure 1
 @click.command()
 @click.option('--meta_folder_dir', default="/Users/mssaxon/samples_translated")
 @click.option('--folder_1', default = "samples_demega")
@@ -82,5 +98,55 @@ def main_multi_model(meta_folder_dir, folder_1, folder_2, folder_3, folder_4, wo
     print("Finished generating target text. Run `xelatex output.tex` to generate pdf")
 
 
+"""
+SD2/JP
+good: snow, keyboard, clock, watch, weapon, bird, bicycle
+bad: captain, teacher, judge, mother, mama, dad, soldier
+
+DE2/ID
+good: cloud, cd, sky, keyboard, movie, moon, apple
+bad: men, husband, male, dragon, mama, thigh, milk
+"""
+# hardcoded I'm sorry god
+def gen_best_worst(meta_folder_dir = "/Users/mssaxon/samples_translated", model='samples_sd2', language='ja', words=["snow", "bicycle", "clock", "bird", "captain", "teacher", "judge"]):
+    prompts_base = open("/Users/mssaxon/freq_lists_translated.csv", "r").readlines()
+
+    index = list(map(lambda x: x.split(",")[0], prompts_base))
+
+    langs = prompts_base[0].strip().split(",")
+
+    # should be 7
+    word_lines = [index.index(word) for word in words]
+    words_translated = [prompts_base[word_line].strip().split(",")[langs.index(language)] for word_line in word_lines]
+
+    source_base = open("base_onehalf.tex", "r").read()
+
+    for i, wt in enumerate(words_translated):
+        source_base = source_base.replace(f"LANG{i+1}", f"{language.upper()}: {wt}")
+    #source_base = source_base.replace(".25in,0.75)", ".9in,0.75)")
+
+    left_captions = generate_title_wordlist(words)
+
+    left_imgs = ""
+    right_imgs = ""
+    left_x_start = 0.5
+    right_x_start = 7.7
+    for y_idx in range(1):
+        # hard coded for now, number of languages
+        y_start = -0.5 - y_idx * 3
+        for x_idx, word in enumerate(words):
+            fname_base_left = meta_folder_dir + "/" + model + f"/{word_lines[x_idx]-1}-{language}-{word}-#.png"
+            left_imgs += generate_images_vert(fname_base_left, y_start, x_idx + left_x_start, col_len=4)
+
+
+    source_base = source_base.replace("LEFTCAPTIONS", left_captions).replace("RIGHTCAPTIONS", "").replace("LEFTIMAGES", left_imgs).replace("RIGHTIMAGES", "")
+
+    with open("output.tex", "w") as f:
+        f.write(source_base)
+
+    print("Finished generating target text. Run `xelatex output.tex` to generate pdf")
+
+
+
 if __name__ == "__main__":
-    main_multi_model()
+    gen_best_worst()
