@@ -65,9 +65,13 @@ def main(analysis_dir, num_samples, fingerprint_selection_count, main_language):
         '''
 
         print(word)
-        print(scores)
 
-        out_lines_main_sim.append(",".join([str(val.detach().cpu().numpy()) for val in scores]) + "\n")
+        outstr = ",".join([str(val.detach().cpu().numpy()) for val in scores]) + "\n"
+
+        print(outstr)
+
+
+        out_lines_main_sim.append(outstr)
         
         
     with open(f"{analysis_dir}/word_results_{main_language}.csv", "w") as f:
