@@ -8,8 +8,6 @@ import os
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-"samples-11-30-7_5-flg1/0-en-dog-0.png"
-
 # if image exists, open it. Else, generate 50x50 black
 def open_image_if_exists(fname):
     if os.path.isfile(fname):

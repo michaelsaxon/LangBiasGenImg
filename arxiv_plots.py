@@ -15,7 +15,7 @@ def r2(x, y):
 
 # 'samples_cv2',
 
-modelnames = ['samples_demega', 'samples_demini', 'samples_sd1-1',  'samples_sd1-2',  'samples_sd1-4', 'samples_sd2', 'samples_cv2', 'samples_dalle2']
+modelnames = ['samples_demega', 'samples_demini', 'samples_sd1-1',  'samples_sd1-2',  'samples_sd1-4', 'samples_sd2', 'samples_cv2', 'samples_dalle2', 'altdiffusion']
 
 #results_en/zh.csv
 #results_self.csv
@@ -100,6 +100,8 @@ fig.show()
 
 
 def hists_by_language(df, ylim = 120, value_name = "Value", title = "", fname = "default.pdf"):
+    print(len(list(df.index)))
+
     fig, axs = plt.subplots(7,1)
 
     colors = ["blue", "green", "black", "gold", "red", "lightblue", "purple"]
@@ -181,6 +183,13 @@ hists_by_language(model_filter(results_cross, 'samples_dalle2'), 50, "Correctnes
 hists_by_language(model_filter(results_cross, 'samples_cv2'), 50, "Correctness (ZH-lang Cross-Consistency)", "CogView2", fname="hist_cov_cv2.pdf")
 hists_by_language(model_neg_filter(results_spec, 'lmao'), 120, "Inverse Distinctiveness", "All Models", fname="hist_spec_all.pdf")
 """
+
+hists_by_language(model_filter(results_cross, 'altdiffusion'), 50, "Correctness (EN-lang Cross-Consistency)", "AltDiffusion", fname="hist_cov_altdiff.pdf")
+hists_by_language(model_filter(results_cross, 'samples_demini'), 50, "Correctness (EN-lang Cross-Consistency)", "DALL-E Mini", fname="hist_cov_demini.pdf")
+hists_by_language(model_filter(results_cross, 'samples_sd2'), 50, "Correctness (EN-lang Cross-Consistency)", "Stable Diffusion 2", fname="hist_cov_sd2.pdf")
+hists_by_language(model_filter(results_cross, 'samples_dalle2'), 50, "Correctness (EN-lang Cross-Consistency)", "DALL-E 2", fname="hist_cov_de2.pdf")
+hists_by_language(model_filter(results_cross, 'samples_cv2'), 50, "Correctness (ZH-lang Cross-Consistency)", "CogView2", fname="hist_cov_cv2.pdf")
+
 
 
 def bivariate_wrapped(df, lang1, lang2, var_template = "$\\bf{###}$-EN Cross. Consistency", title="", filt=""):

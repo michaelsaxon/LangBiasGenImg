@@ -5,6 +5,8 @@ from diffusers import StableDiffusionPipeline, AltDiffusionPipeline
 from typing import Callable, List, Optional, Union
 import os
 
+# CUDA_VISIBLE_DEVICES=3 python generate_inspect_utils.py --output_dir samples_translated/altdiffusion --n_predictions 12 --model_id BAAI/AltDiffusion-m9 --split_batch 3
+
 # external implementation of the first two steps of the generation pipeline for stable diffusion
 # STEP 1: GET EMBEDDINGS
 def get_text_embs(
