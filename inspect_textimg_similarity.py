@@ -21,7 +21,7 @@ def get_concept_images_sim(processor, model, concept, fnames):
     inputs.to(model.device)
     outputs = model(**inputs)
     probs = outputs.logits_per_image
-    print(probs)
+    #print(probs)
     return probs.mean().squeeze()
 
 
@@ -67,7 +67,7 @@ def main(analysis_dir, num_samples, fingerprint_selection_count, main_language):
         print(word)
         print(scores)
 
-        out_lines_main_sim.append(",".join([str(val) for val in scores]) + "\n")
+        out_lines_main_sim.append(",".join([str(val.detach().cpu().numpy()[0]) for val in scores]) + "\n")
         
         
     with open(f"{analysis_dir}/word_results_{main_language}.csv", "w") as f:
