@@ -40,9 +40,6 @@ def main(analysis_dir, num_samples, fingerprint_selection_count, main_language):
     index = prompts_base[0].strip().split(",")
 
     out_lines_main_sim = [prompts_base[0]]
-
-    with open(f"{analysis_dir}/language_diversity.csv", "w") as f:
-        f.writelines([prompts_base[0], ",".join([str(inverse_diversity[index]) for index in index]) + "\n"])
     
     for line_no, line in enumerate(prompts_base[1:]):
         results_dict = defaultdict(list)
