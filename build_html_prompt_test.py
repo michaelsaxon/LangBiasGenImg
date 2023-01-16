@@ -38,6 +38,18 @@ prompt_options_zh = [
     "一张$$$的图片"
 ]
 
+
+prompt_options_es = [
+    "un foto de $$$",
+    "un foto de un $$$",
+    "un foto de una $$$",
+    "un foto de el $$$",
+    "un foto de la $$$",
+    "un foto de mi $$$",
+    "un foto de tu $$$",
+    "un foto de nuestra $$$"
+]
+
 prompt_options = prompt_options_en
 num_images_per = 9 # 5 or 9
 grab_from_cap_idx = 3 # or 0 
