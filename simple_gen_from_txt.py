@@ -65,7 +65,7 @@ def main_stable_diffusion(output_dir, n_predictions, split_batch, model_id, inpu
         line = line.strip().lower().split(",")
 
         prefix = "-".join(line[0:2])
-        prompt = line[3]
+        prompt = line[2]
         print(f"generating {line_idx}: '{prompt}'")
         images = []
         for _ in range(split_batch):
@@ -139,7 +139,7 @@ def main_dalle(output_dir, n_predictions, model_size, input_txt):
         line = line.strip().lower().split(",")
 
         prefix = "-".join(line[0:2])
-        prompt = line[3]
+        prompt = line[2]
 
         print(f"generating {line_no}: '{prompt}'")
 
