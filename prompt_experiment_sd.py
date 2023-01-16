@@ -97,7 +97,7 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv, language):
         line = prompts_base[line_idx]
         line_no = line_idx - 1
         line = line.strip().split(",")
-        for prompt_template in prompt_options[language]:
+        for j, prompt_template in enumerate(prompt_options[language]):
             # build a prompt based on the above templates from the 
             word = line[index.index(language)]
             prompt = prompt_template.replace("$$$", word)
@@ -107,7 +107,7 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv, language):
                 with autocast("cuda"):
                     images += pipe(prompt, guidance_scale=7.5, num_images_per_prompt=int(n_predictions / split_batch)).images
             for i, im in enumerate(images):
-                fname = f"{line_no}-{language}-{line[0]}-{i}.png"
+                fname = f"{line_no}-{j}-{line[0]}-{i}.png"
                 print(f"saving image {fname}...")
                 im.save(f"{output_dir}/{fname}")
 
