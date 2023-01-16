@@ -91,6 +91,7 @@ def main(output_dir, n_predictions, split_batch, model_id, input_csv, language):
     prompts_base = open(f"frequencylist/{input_csv}", "r").readlines()
     index = prompts_base[0].strip().split(",")
 
+    start_line = 0
 
     for line_idx in range(start_line, len(prompts_base)):
         line = prompts_base[line_idx]
