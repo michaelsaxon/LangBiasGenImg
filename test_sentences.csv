@@ -1,0 +1,31 @@
+testid,lang,sent
+0,en,a dog made of fire
+0,es,un perro hecho de fuego
+0,ja,火でできた犬
+1,en,a dog made of fire standing on the moon
+1,es,un perro hecho de fuego pisando en la luna
+1,ja,火でできた犬が月に立っている
+2,en,a dog made of fire standing on the moon eating pizza
+2,es,un perro hecho de fuego pisando en la luna comiendo pizza
+2,ja,月に立っていてピザを食べて火でできた犬
+3,en,a big dog playing in a field
+3,es,un perro grande jugando en un campo
+3,ja,野原に遊ぶ大きな犬
+4,en,a big dog playing frisbee in a field
+4,es,un perro grande jugando con una pelota en un campo
+4,ja,野原にフリスビーをしてる大きな犬
+5,en,a bird riding a dog
+5,es,un pájaro montando a un perro
+5,ja,犬を登っている鳥 
+6,en,a bird using a keyboard
+6,es,un pájaro usando un teclado
+6,ja,キーボードを使っている鳥
+7,en,a bird using a keyboard in the snow
+7,es,un pájaro usando un teclado en la nieve
+7,ja,雪にキーボードを使っている鳥
+8,en,a bicycle stuck in a tree
+8,es,una bicicleta en un árbol
+8,ja,木に引っかかった自転車
+9,en,a bird reading a clock
+9,es,un pájaro leyendo un reloj
+9,ja,時計を読む鳥

@@ -47,6 +47,57 @@ def generate_images_vert(fname_base, start_point_y, x_point, spacing=1, fidx_sta
 
 
 
+@click.command()
+@click.option('--meta_folder_dir', default="/Users/mssaxon/samples_translated")
+@click.option('--folder_1', default = "samples_demega")
+@click.option('--folder_2', default = "samples_sd2")
+@click.option('--folder_3', default = "samples_dalle2")
+@click.option('--folder_4', default = "altdiffusion")
+@click.option('--word_1', default = "dog")
+@click.option('--word_2', default = "airplane")
+@click.option('--word_3', default = "face")
+def main_three(meta_folder_dir, folder_1, folder_2, folder_3, folder_4, word_1, word_2, word_3):
+    prompts_base = open("/Users/mssaxon/freq_lists_translated.csv", "r").readlines()
+
+    index = list(map(lambda x: x.split(",")[0], prompts_base))
+
+    word_line_1 = index.index(word_1)
+    word_line_2 = index.index(word_2)
+    word_line_3 = index.index(word_3)
+
+
+    source_base = open("base_3part.tex", "r").read()
+
+    left_captions = generate_title(prompts_base[word_line_1].strip().split(","))
+    mid_captions = generate_title(prompts_base[word_line_2].strip().split(","), 7.7)
+    right_captions = generate_title(prompts_base[word_line_3].strip().split(","), 14.9)
+
+
+    left_imgs = ""
+    right_imgs = ""
+    middle_imgs = ""
+    left_x_start = 0.5
+    mid_x_start = 7.7
+    right_x_start = 14.9
+    for y_idx, folder in enumerate([folder_1, folder_2, folder_3, folder_4]):
+        # hard coded for now, number of languages
+        y_start = -0.5 - y_idx * 3
+        for x_idx, lang in enumerate(prompts_base[0].strip().split(",")):
+            fname_base_left = meta_folder_dir + "/" + folder + f"/{word_line_1-1}-{lang}-{word_1}-#.png"
+            left_imgs += generate_images_vert(fname_base_left, y_start, x_idx + left_x_start)
+            fname_base_mid = meta_folder_dir + "/" + folder + f"/{word_line_2-1}-{lang}-{word_2}-#.png"
+            middle_imgs += generate_images_vert(fname_base_mid, y_start, x_idx + mid_x_start)
+            fname_base_right = meta_folder_dir + "/" + folder + f"/{word_line_3-1}-{lang}-{word_3}-#.png"
+            right_imgs += generate_images_vert(fname_base_right, y_start, x_idx + right_x_start, fidx_start=3)
+
+
+
+    source_base = source_base.replace("LEFTCAPTIONS", left_captions).replace("RIGHTCAPTIONS", right_captions).replace("LEFTIMAGES", left_imgs).replace("RIGHTIMAGES", right_imgs).replace("MIDDLECAPTIONS", mid_captions).replace("MIDDLEIMAGES", middle_imgs)
+
+    with open("output.tex", "w") as f:
+        f.write(source_base)
+
+    print("Finished generating target text. Run `xelatex output.tex` to generate pdf")
 
 
 # the code to gen figure 1
@@ -149,4 +200,4 @@ def gen_best_worst(meta_folder_dir = "/Users/mssaxon/samples_translated", model=
 
 
 if __name__ == "__main__":
-    gen_best_worst()
+    main_three()

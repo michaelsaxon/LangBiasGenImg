@@ -1,7 +1,7 @@
 import click
 import torch
 from torch import autocast
-from diffusers import StableDiffusionPipeline
+from diffusers import StableDiffusionPipeline, AltDiffusionPipeline
 from typing import Callable, List, Optional, Union
 import os
 
@@ -52,21 +52,27 @@ def main_stable_diffusion(output_dir, n_predictions, split_batch, model_id, inpu
     model_id = model_id
     device = "cuda"
 
-    pipe = StableDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
+    if model_id == "BAAI/AltDiffusion-m9":
+        pipe = AltDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
+    else:    
+        pipe = StableDiffusionPipeline.from_pretrained(model_id, use_auth_token=True)
     pipe = pipe.to(device)
 
     os.makedirs(output_dir, exist_ok=True)
 
     lines = open(input_txt, "r").readlines()
     for line_idx, line in enumerate(lines):
-        prompt = line.strip().lower()
+        line = line.strip().lower().split(",")
+
+        prefix = "-".join(line[0:2])
+        prompt = line[3]
         print(f"generating {line_idx}: '{prompt}'")
         images = []
         for _ in range(split_batch):
             with autocast("cuda"):
                 images += pipe(prompt, guidance_scale=7.5, num_images_per_prompt=int(n_predictions / split_batch)).images
         for i, im in enumerate(images):
-            fname = f"{line_idx}-{i}.png"
+            fname = f"{prefix}-{line_idx}-{i}.png"
             print(f"saving image {fname}...")
             im.save(f"{output_dir}/{fname}")
 
@@ -130,7 +136,10 @@ def main_dalle(output_dir, n_predictions, model_size, input_txt):
 
     lines = open(input_txt, "r").readlines()
     for line_no, line in enumerate(lines):
-        prompt = line.strip().lower()
+        line = line.strip().lower().split(",")
+
+        prefix = "-".join(line[0:2])
+        prompt = line[3]
 
         print(f"generating {line_no}: '{prompt}'")
 
@@ -156,7 +165,7 @@ def main_dalle(output_dir, n_predictions, model_size, input_txt):
         decoded_images = p_decode(encoded_images, vqgan_params)
         decoded_images = decoded_images.clip(0.0, 1.0).reshape((-1, 256, 256, 3))
         for i, decoded_img in enumerate(decoded_images):
-            fname = f"{line_no}-{i}.png"
+            fname = f"{prefix}-{line_no}-{i}.png"
             print(f"saving image {fname}...")
             im = Image.fromarray(np.asarray(decoded_img * 255, dtype=np.uint8))
             im.save(f"{output_dir}/{fname}")
