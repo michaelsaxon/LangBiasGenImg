@@ -172,12 +172,15 @@ def main_dalle(output_dir, n_predictions, model_size, input_txt):
 
 
 
-
+# BAAI/AltDiffusion-m9
+# stabilityai/stable-diffusion-2
+# mini
+# mega
 @click.command()
-@click.option('--output_dir', default='seq_gen_samp')
-@click.option('--n_predictions', default=12)
+@click.option('--output_dir', default='sample_sent_2')
+@click.option('--n_predictions', default=4)
 @click.option('--split_batch', default=1)
-@click.option('--model_id', default="CompVis/stable-diffusion-v1-4")
+@click.option('--model_id', default="stabilityai/stable-diffusion-2")
 @click.option('--input_txt')
 def main(output_dir, n_predictions, split_batch, model_id, input_txt):
     if model_id == "mega" or model_id == "mini":
