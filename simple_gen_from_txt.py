@@ -181,7 +181,7 @@ def main_dalle(output_dir, n_predictions, model_size, input_txt):
 @click.option('--n_predictions', default=4)
 @click.option('--split_batch', default=1)
 @click.option('--model_id', default="stabilityai/stable-diffusion-2")
-@click.option('--input_txt', default="test_sentences_2.txt")
+@click.option('--input_txt', default="test_sentences_2.csv")
 def main(output_dir, n_predictions, split_batch, model_id, input_txt):
     if model_id == "mega" or model_id == "mini":
         main_dalle(output_dir, n_predictions, model_id, input_txt)
