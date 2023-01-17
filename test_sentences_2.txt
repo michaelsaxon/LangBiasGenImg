@@ -13,18 +13,18 @@
 391,en,the street has many signs that are in two different languages
 394,en,an elephant being examined by two individuals next to a road
 455,en,there are many young men that are sitting in a room together
-514,en,carrots , blueberries , apples , pears , peppers , and cucumbers in a pile
-564,en,two giraffes standing on all fours next to one another with grass , bushes and trees around them
+514,en,carrots blueberries apples pears peppers and cucumbers in a pile
+564,en,two giraffes standing on all fours next to one another with grass bushes and trees around them
 611,en,there are two skiers that are seen going down the road
 619,en,there is a pizza that is cut in to slices
 662,en,two men are seated and writing on paper while two other men stand behind them
 709,en,some red bananas and cut up apples next to knife on a table
 718,en,a pizza with 1 / 4 of it ' s slices missing
-753,en,there are two zebras , one is standing and the other is sitting on the ground facing away
+753,en,there are two zebras one is standing and the other is sitting on the ground facing away
 805,en,a table full of food and two glasses with drinks
 868,en,there are two brown bears that are playing together in the water
 875,en,two people standing outside in the dark beside two buses
-902,en,two women are looking at many colorful , heart shaped cakes
+902,en,two women are looking at many colorful heart shaped cakes
 924,en,a black and white photo of two teddy bears sitting next to nikon cameras
 105,es,un par de hombres hacen piruetas con sus monopatines
 121,es,caballos corriendo con las cabezas muy juntas
@@ -54,8 +54,8 @@
 875,es,dos personas en la calle a oscuras al lado de dos autobuses
 902,es,dos mujeres miran a muchos pasteles de colores y con forma de corazón
 924,es,una foto en blanco y negro de dos ositos de peluche sentados junto a cámaras nikon
-105,de,ein paar männer , die tricks auf skateboards bei schienen machen .
-121,de,pferde rennen , während ihre gesichter nahe beieinander sind .
+105,de,ein paar männer die tricks auf skateboards bei schienen machen .
+121,de,pferde rennen während ihre gesichter nahe beieinander sind .
 177,de,die drei giraffen sind weg von der kamera geleitet .
 190,de,zwei frauen staning ganz in der nähe blick auf den bildschirmen ihrer handys .
 206,de,menschen fahren in den waggongs eines alten personenzuges .
@@ -63,23 +63,23 @@
 240,de,could not translate
 300,de,zwei sperrholztische mit verschiedenen früchten einschließlich beeren und pfirsichen .
 318,de,leute sitzen in einem raum mit laptops und mitteilungs bücher mit namen von personen .
-340,de,zwei giraffen einen schaut oben , während der andere nach unten essen biege
+340,de,zwei giraffen einen schaut oben während der andere nach unten essen biege
 355,de,offene bauernmarkt mit verschiedenen arten von gemüse drin .
-379,de,vögel , auf dem wasser ruhend , das von bäumen umgeben ist .
-391,de,die straße hat viele schilder , welche in zwei verschiedenen sprachen verfasst sind .
-394,de,ein elefant wird von zwei personen , neben einer straße untersucht .
-455,de,da sind viele junge männer , die in zusammen in einem raum sitzen .
-514,de,karotten , blaubeeren , äpfel , birnen , paprikas und gurken in einem stapel .
-564,de,zwei giraffen , die auf allen vieren nebeneinander mit gras , büschen und bäumen um sie herum .
-611,de,es gibt zwei skifahrer , die gesehenes hinuntergehen die straße sind
+379,de,vögel auf dem wasser ruhend das von bäumen umgeben ist .
+391,de,die straße hat viele schilder welche in zwei verschiedenen sprachen verfasst sind .
+394,de,ein elefant wird von zwei personen neben einer straße untersucht .
+455,de,da sind viele junge männer die in zusammen in einem raum sitzen .
+514,de,karotten blaubeeren äpfel birnen paprikas und gurken in einem stapel .
+564,de,zwei giraffen die auf allen vieren nebeneinander mit gras büschen und bäumen um sie herum .
+611,de,es gibt zwei skifahrer die gesehenes hinuntergehen die straße sind
 619,de,da ist eine pizza die in stücke geschnitten ist .
-662,de,zwei männer , die sitzen und auf papier schreiben , während zwei andere männer hinter ihnen stehen .
+662,de,zwei männer die sitzen und auf papier schreiben während zwei andere männer hinter ihnen stehen .
 709,de,manche roten bananen und geschnittene äpfel am tisch neben dem messer
 718,de,eine pizza mit 1/4 der es ' s scheiben fehlt .
-753,de,da sind 2 zebras , das eine steht und das andere sitzt auf dem boden abgewandt .
+753,de,da sind 2 zebras das eine steht und das andere sitzt auf dem boden abgewandt .
 805,de,ein tisch voll mit essen und zwei gläsern mit getränken .
-868,de,da sind zwei braunbären , welche zusammen im wasser spielen .
-875,de,zwei leute , die zusammen draußen im dunkeln und neben zwei bussen stehen .
+868,de,da sind zwei braunbären welche zusammen im wasser spielen .
+875,de,zwei leute die zusammen draußen im dunkeln und neben zwei bussen stehen .
 902,de,frauen suchen bunte kuchen
 924,de,ein schwarzweiss-foto von zwei teddybären sitzt neben nikon-kameras .
 105,zh,两个男人在栏杆上玩花样滑板
