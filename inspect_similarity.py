@@ -150,6 +150,47 @@ def main(analysis_dir, num_samples, fingerprint_selection_count, main_language):
         f.writelines(out_lines_main_spec)
     
 
+@click.command()
+@click.option('--analysis_dir', default='samples_sd2')
+@click.option('--num_samples', default=8)
+@click.option('--num_prompt_exs', default=8)
+def main_prompt_test(analysis_dir, num_samples, num_prompt_exs):
+    device = "cuda"
+    model = CLIPVisionModel.from_pretrained("openai/clip-vit-base-patch32")
+    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+    model.to(device)
+    
+    prompts_base = open("frequencylist/freq_lists_translated.csv", "r").readlines()
+    index = prompts_base[0].strip().split(",")
+
+    out_lines_self_sim = [prompts_base[0]]
+    
+    for line_no, line in enumerate(prompts_base[1:]):
+        results_dict = defaultdict(list)
+        line = line.strip().split(",")
+        
+        # collect this languages embeddings
+        for idx in range(len(index)):
+            fnames = [f"{analysis_dir}/{line_no}-{j}-{line[0]}-{i}.png" for i in range(num_samples) for j in range(num_prompt_exs)]
+            image_embedding = get_image_embeddings(processor, model, fnames)
+            results_dict[index[idx]] = image_embedding
+        
+        self_sims = lang_self_sim(results_dict)
+
+        # zero out if there's an error log for each word
+        for language in index:
+            if os.path.isfile(f"{analysis_dir}/{line_no}-{language}-{line[0]}-failure.log"):
+                self_sims[language] = "---"
+        
+        print("self SIM " + line[0] + " " + str(self_sims))
+
+        out_lines_self_sim.append(",".join([str(self_sims[language]) for language in index]) + "\n")
+        
+
+    with open(f"{analysis_dir}/results_self.csv", "w") as f:
+        f.writelines(out_lines_self_sim)
+
+
 
 if __name__ == "__main__":
-    main()
+    main_prompt_test()

@@ -51,18 +51,20 @@ def load_all_csvs(folder = "/Users/mssaxon/results", merge=True):
     results_self = {}
     results_spec = {}
     results_langdiv = {}
+    results_text = {}
     concepts = pd.read_csv("/Users/mssaxon/freq_lists_translated.csv")["en"]
     for modelname in modelnames:
         results_self[modelname] = load_csv_add_concepts(f"{folder}/{modelname}_results_self.csv", concepts)
         results_spec[modelname] = load_csv_add_concepts(f"{folder}/{modelname}_results_specific.csv", concepts)
         results_langdiv[modelname] = pd.read_csv(f"{folder}/{modelname}_language_diversity.csv")
+        results_text[modelname] = load_csv_add_concepts(f"{folder}/{modelname}_word_results_en.csv", concepts)
         if "cv2" in modelname:
             lang = "zh"
         else:
             lang = "en"
         results_cross[modelname] = load_csv_add_concepts(f"{folder}/{modelname}_results_{lang}.csv", concepts)
     if merge:
-        return merge_set(results_cross), merge_set(results_self), merge_set(results_spec), merge_set(results_langdiv)
+        return merge_set(results_cross), merge_set(results_self), merge_set(results_spec), merge_set(results_langdiv), merge_set(results_text)
     return results_cross, results_self, results_spec, results_langdiv
 
 
@@ -70,7 +72,7 @@ def load_all_csvs(folder = "/Users/mssaxon/results", merge=True):
 languages = ["en", "es", "de", "zh", "ja", "he", "id"]
 
 
-results_cross, results_self, results_spec, results_langdiv = load_all_csvs()
+results_cross, results_self, results_spec, results_langdiv, results_text = load_all_csvs()
 
 heights = []
 bins = []
@@ -114,8 +116,11 @@ def hists_by_language(df, ylim = 120, value_name = "Value", title = "", fname = 
             axs[i].set(xticklabels=[], xlabel = None, ylabel=None)
         sns.histplot(df[language], element="step", ax = axs[i], bins=50, binrange=(0,1), color=colors[i])
         axs[i].set(xlabel='',ylabel='')
-        axs[i].text(0.05, ylim/2, language.upper(), fontsize=10, weight='bold', color=fontcolors[i],
-            bbox={'facecolor': colors[i], 'alpha': 0.5, 'pad': 5}, fontname="monospace")
+        #axs[i].text(0.05, ylim/2, language.upper(), fontsize=10, weight='bold', color=fontcolors[i],
+        #    bbox={'facecolor': colors[i], 'alpha': 0.5, 'pad': 5}, fontname="monospace")
+        axs[i].text(0.05, ylim/2.9, language.upper(), fontsize=25, weight='bold', color=colors[i],
+            fontname="monospace")
+
     fig.supxlabel(value_name)
     fig.supylabel("Language")
     if title != "":
@@ -152,10 +157,10 @@ def list_sorted_words(df, ax, ascending=False, n=20):
 # [results_cross["model"] == "samples_sd2"]
 
 
-def average_key(df, column):
+def average_key(df, column, rule = "mean"):
     rules = {}
     for language in languages:
-        rules[language] = "mean"
+        rules[language] = rule
     other_keys = [key for key in df.keys() if key != column and key not in language]
     for key in other_keys:
         rules[key] = lambda x: x.sample(1)
@@ -171,13 +176,43 @@ def model_neg_filter(df, models):
     return df[df["model"] != models]
 
 
+
+model_name_map = {'samples_demega' : "DALL-E Mega", 'samples_demini' : "DALL-E Mini", 'samples_sd1-1' : "SD 1.1",  'samples_sd1-2' : "SD 1.2",  'samples_sd1-4' : "SD 1.4", 'samples_sd2' : "SD 2", 'samples_cv2'  : "CogView 2", 'samples_dalle2' : "DALL-E 2", 'altdiffusion' : "AltDiffusion m9"}
+
+# model, en, es, de, zh, ja, he, id
+# within each col "avg (std)" for  results_cross, results_self, results_spec, results_text
+# results_cross, results_self, results_spec, results_langdiv, results_text
+avg_by_lang = defaultdict(lambda : defaultdict(list))
+for model in modelnames:
+    line = [model_name_map[model]]
+    avg_by_type = defaultdict(list)
+    for language in languages:
+        for i, mat in enumerate([results_cross, results_text]):
+            tmp_df = model_filter(mat, model)
+            number = float(tmp_df[language].mean()*(100 ** ((i+1) % 2)))
+            line += [f"{number:.0f}"]
+            avg_by_lang[language][i % 2].append(number)
+            avg_by_type[i % 2].append(number)
+    for i in range(2):
+        number = sum(avg_by_type[i]) / len(avg_by_type[i])
+        line += [f"{number:.0f}"]
+    print(" & ".join(line) + " \\\\")
+line = [""]
+for language in languages:
+    for i in range(2):
+        number = sum(avg_by_lang[language][i]) / len(avg_by_lang[language][i])
+        line += [f"{number:.0f}"]
+print(" & ".join(line) + " \\\\")
+
+
 #print(results_cross)
 #print(list_sorted_words(average_key(results_cross, "concept"), "ja"))
 #print(list_sorted_words(model_filter(results_cross, "samples_sd1-1"), "ja", ascending = True))
 
 #scatter_two_ax(model_filter(results_cross, "samples_sd1-1"))
 
-"""hists_by_language(model_filter(results_cross, 'samples_demini'), 50, "Correctness (EN-lang Cross-Consistency)", "DALL-E Mini", fname="hist_cov_demini.pdf")
+"""
+hists_by_language(model_filter(results_cross, 'samples_demini'), 50, "Correctness (EN-lang Cross-Consistency)", "DALL-E Mini", fname="hist_cov_demini.pdf")
 hists_by_language(model_filter(results_cross, 'samples_sd2'), 50, "Correctness (EN-lang Cross-Consistency)", "Stable Diffusion 2", fname="hist_cov_sd2.pdf")
 hists_by_language(model_filter(results_cross, 'samples_dalle2'), 50, "Correctness (EN-lang Cross-Consistency)", "DALL-E 2", fname="hist_cov_de2.pdf")
 hists_by_language(model_filter(results_cross, 'samples_cv2'), 50, "Correctness (ZH-lang Cross-Consistency)", "CogView2", fname="hist_cov_cv2.pdf")
@@ -189,7 +224,7 @@ hists_by_language(model_filter(results_cross, 'samples_demini'), 50, "Correctnes
 hists_by_language(model_filter(results_cross, 'samples_sd2'), 50, "Correctness (EN-lang Cross-Consistency)", "Stable Diffusion 2", fname="hist_cov_sd2.pdf")
 hists_by_language(model_filter(results_cross, 'samples_dalle2'), 50, "Correctness (EN-lang Cross-Consistency)", "DALL-E 2", fname="hist_cov_de2.pdf")
 hists_by_language(model_filter(results_cross, 'samples_cv2'), 50, "Correctness (ZH-lang Cross-Consistency)", "CogView2", fname="hist_cov_cv2.pdf")
-
+hists_by_language(model_filter(results_cross, 'samples_sd1-4'), 50, "Correctness (EN-lang Cross-Consistency)", "Stable Diffusion 1.4", fname="hist_cov_sd14.pdf")
 
 
 def bivariate_wrapped(df, lang1, lang2, var_template = "$\\bf{###}$-EN Cross. Consistency", title="", filt=""):
