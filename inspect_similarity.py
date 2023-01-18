@@ -177,7 +177,7 @@ def main_prompt_test(analysis_dir, num_samples, num_prompt_exs):
         self_sims = lang_self_sim(results_dict)
 
         # zero out if there's an error log for each word
-        for language in index:
+        for language in ["en"]:
             if os.path.isfile(f"{analysis_dir}/{line_no}-{language}-{line[0]}-failure.log"):
                 self_sims[language] = "---"
         
