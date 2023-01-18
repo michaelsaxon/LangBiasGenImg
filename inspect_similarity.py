@@ -170,10 +170,9 @@ def main_prompt_test(analysis_dir, num_samples, num_prompt_exs):
         line = line.strip().split(",")
         
         # collect this languages embeddings
-        for idx in range(len(index)):
-            fnames = [f"{analysis_dir}/{line_no}-{j}-{line[0]}-{i}.png" for i in range(num_samples) for j in range(num_prompt_exs)]
-            image_embedding = get_image_embeddings(processor, model, fnames)
-            results_dict[index[idx]] = image_embedding
+        fnames = [f"{analysis_dir}/{line_no}-{j}-{line[0]}-{i}.png" for i in range(num_samples) for j in range(num_prompt_exs)]
+        image_embedding = get_image_embeddings(processor, model, fnames)
+        results_dict["en"] = image_embedding
         
         self_sims = lang_self_sim(results_dict)
 
