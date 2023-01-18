@@ -183,7 +183,7 @@ def main_prompt_test(analysis_dir, num_samples, num_prompt_exs):
         
         print("self SIM " + line[0] + " " + str(self_sims))
 
-        out_lines_self_sim.append(",".join([str(self_sims[language]) for language in index]) + "\n")
+        out_lines_self_sim.append(",".join([str(self_sims[language]) for language in ["en"]]) + "\n")
         
 
     with open(f"{analysis_dir}/results_self.csv", "w") as f:
